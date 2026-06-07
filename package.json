@@ -1,0 +1,13 @@
+{
+  "name": "ams-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "ams-fe",
+    "ams-be"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev --workspace=ams-fe",
+    "dev:backend": "npm run dev --workspace=ams-be"
+  }
+}

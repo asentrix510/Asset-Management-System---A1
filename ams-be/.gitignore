@@ -1,0 +1,17 @@
+# Dependency directory
+node_modules/
+
+# Env file
+.env
+
+# Uploads and temporary files
+uploads/qr/*
+!uploads/qr/.gitkeep
+uploads/reports/*
+!uploads/reports/.gitkeep
+uploads/backups/*
+!uploads/backups/.gitkeep
+
+# Logs
+logs/
+*.log
