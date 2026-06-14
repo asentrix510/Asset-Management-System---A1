@@ -17,6 +17,8 @@ const dashboardRoutes =
   require(
     "./routes/assignmentRoutes"
   );
+  const vendorRoutes =
+  require("./routes/vendorRoutes");
 const app = express();
 
 app.use(cors());
@@ -36,6 +38,10 @@ app.use(
 app.use(
   "/api/assignments",
   assignmentRoutes
+);
+app.use(
+  "/api/vendors",
+  vendorRoutes
 );
 app.get("/api/health", (req, res) => {
   res.status(200).json({
