@@ -1,15 +1,13 @@
 import api from "./axios";
 
 const getToken = () =>
-  localStorage.getItem(
-    "ams_token"
-  );
+  localStorage.getItem("ams_token");
 
-export const getDashboardStats =
+export const getAssignments =
   async () => {
     const response =
       await api.get(
-        "/dashboard/stats",
+        "/assignments",
         {
           headers: {
             Authorization:
@@ -21,11 +19,12 @@ export const getDashboardStats =
     return response.data;
   };
 
-export const getStatusChart =
-  async () => {
+export const assignAsset =
+  async (data) => {
     const response =
-      await api.get(
-        "/dashboard/status-chart",
+      await api.post(
+        "/assignments",
+        data,
         {
           headers: {
             Authorization:
@@ -37,27 +36,12 @@ export const getStatusChart =
     return response.data;
   };
 
-export const getCategoryChart =
-  async () => {
+export const returnAsset =
+  async (id) => {
     const response =
-      await api.get(
-        "/dashboard/category-chart",
-        {
-          headers: {
-            Authorization:
-              `Bearer ${getToken()}`,
-          },
-        }
-      );
-
-    return response.data;
-  };
-
-export const getRecentActivity =
-  async () => {
-    const response =
-      await api.get(
-        "/dashboard/recent-activity",
+      await api.put(
+        `/assignments/${id}/return`,
+        {},
         {
           headers: {
             Authorization:

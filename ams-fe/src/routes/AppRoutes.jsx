@@ -8,7 +8,7 @@ import Vendors from "../pages/vendors/Vendors";
 import Maintenance from "../pages/maintenance/Maintenance";
 import Reports from "../pages/reports/Reports";
 import Settings from "../pages/settings/Settings";
-
+import Assignments from "../pages/assignments/Assignments";
 import AdminRoute from "./AdminRoute";
 import DashboardLayout from "../components/layout/DashboardLayout";
 
@@ -45,6 +45,16 @@ export default function AppRoutes() {
           <AdminRoute>
             <DashboardLayout>
               <Assets />
+            </DashboardLayout>
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/assignments"
+        element={
+          <AdminRoute>
+            <DashboardLayout>
+              <Assignments />
             </DashboardLayout>
           </AdminRoute>
         }

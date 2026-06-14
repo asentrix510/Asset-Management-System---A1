@@ -13,6 +13,10 @@ const dashboardRoutes =
   require(
     "./routes/dashboardRoutes"
   );
+  const assignmentRoutes =
+  require(
+    "./routes/assignmentRoutes"
+  );
 const app = express();
 
 app.use(cors());
@@ -28,6 +32,10 @@ app.use(
 app.use(
   "/api/dashboard",
   dashboardRoutes
+);
+app.use(
+  "/api/assignments",
+  assignmentRoutes
 );
 app.get("/api/health", (req, res) => {
   res.status(200).json({

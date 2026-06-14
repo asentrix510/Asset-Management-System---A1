@@ -3,6 +3,7 @@ import {
   FaUsers,
   FaCheckCircle,
   FaWrench,
+  FaUserFriends,
 } from "react-icons/fa";
 
 import {
@@ -12,25 +13,61 @@ import {
 
 import {
   getDashboardStats,
+  getStatusChart,
+  getCategoryChart,
+  getRecentActivity,
 } from "../../api/dashboardApi";
+
+import AssetStatusChart from "../../components/dashboard/AssetStatusChart";
+import AssetCategoryChart from "../../components/dashboard/AssetCategoryChart";
 
 export default function Dashboard() {
   const [stats, setStats] =
     useState([]);
 
+  const [statusData, setStatusData] =
+    useState([]);
+
+  const [categoryData, setCategoryData] =
+    useState([]);
+
+  const [activities, setActivities] =
+    useState([]);
+
   useEffect(() => {
-    const fetchStats =
+    const fetchDashboardData =
       async () => {
         try {
-          const data =
+          const statsData =
             await getDashboardStats();
+
+          const statusChart =
+            await getStatusChart();
+
+          const categoryChart =
+            await getCategoryChart();
+
+          const recentActivity =
+            await getRecentActivity();
+
+          setStatusData(
+            statusChart.data
+          );
+
+          setCategoryData(
+            categoryChart.data
+          );
+
+          setActivities(
+            recentActivity.activities
+          );
 
           setStats([
             {
               title:
                 "Total Assets",
               value:
-                data.stats
+                statsData.stats
                   .totalAssets,
               icon:
                 <FaBoxOpen />,
@@ -41,7 +78,7 @@ export default function Dashboard() {
               title:
                 "Assigned Assets",
               value:
-                data.stats
+                statsData.stats
                   .assignedAssets,
               icon:
                 <FaUsers />,
@@ -52,7 +89,7 @@ export default function Dashboard() {
               title:
                 "Available Assets",
               value:
-                data.stats
+                statsData.stats
                   .availableAssets,
               icon:
                 <FaCheckCircle />,
@@ -63,23 +100,29 @@ export default function Dashboard() {
               title:
                 "Under Maintenance",
               value:
-                data.stats
+                statsData.stats
                   .maintenanceAssets,
               icon:
                 <FaWrench />,
               light:
                 "bg-amber-50 text-amber-600",
             },
+            {
+              title: "Total Users",
+              value: statsData.stats.totalUsers,
+              icon: <FaUserFriends />,
+              light: "bg-pink-50 text-pink-600",
+            }
           ]);
         } catch (error) {
           console.error(
-            "Dashboard stats error:",
+            "Dashboard error:",
             error
           );
         }
       };
 
-    fetchStats();
+    fetchDashboardData();
   }, []);
 
   return (
@@ -95,7 +138,9 @@ export default function Dashboard() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
+      {/* Stats Cards */}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-5 mb-8">
         {stats.map((item) => (
           <div
             key={item.title}
@@ -120,55 +165,65 @@ export default function Dashboard() {
         ))}
       </div>
 
+      {/* Charts */}
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
+        <AssetStatusChart
+          data={statusData}
+        />
+
+        <AssetCategoryChart
+          data={categoryData}
+        />
+      </div>
+
+      {/* Recent Activity */}
+
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
         <h3 className="text-base font-bold text-slate-800 mb-4">
           Recent Activity
         </h3>
 
         <div className="space-y-3">
-          {[
-            {
-              text:
-                "Asset #A-045 assigned to John Doe",
-              time:
-                "2 min ago",
-            },
-            {
-              text:
-                "Maintenance ticket #M-012 created",
-              time:
-                "1 hr ago",
-            },
-            {
-              text:
-                "New user Sarah added to system",
-              time:
-                "3 hr ago",
-            },
-            {
-              text:
-                "Vendor Acme Corp updated contract",
-              time:
-                "Yesterday",
-            },
-          ].map((a, i) => (
-            <div
-              key={i}
-              className="flex items-center justify-between py-2.5 border-b border-slate-50 last:border-0"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+          {activities.length >
+            0 ? (
+            activities.map(
+              (activity) => (
+                <div
+                  key={
+                    activity.asset_id
+                  }
+                  className="flex items-center justify-between py-2.5 border-b border-slate-50 last:border-0"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
 
-                <p className="text-sm text-slate-700">
-                  {a.text}
-                </p>
-              </div>
+                    <p className="text-sm text-slate-700">
+                      {
+                        activity.asset_name
+                      }{" "}
+                      (
+                      {
+                        activity.status
+                      }
+                      )
+                    </p>
+                  </div>
 
-              <span className="text-xs text-slate-400 flex-shrink-0 ml-4">
-                {a.time}
-              </span>
-            </div>
-          ))}
+                  <span className="text-xs text-slate-400">
+                    {new Date(
+                      activity.updated_at
+                    ).toLocaleDateString()}
+                  </span>
+                </div>
+              )
+            )
+          ) : (
+            <p className="text-sm text-slate-500">
+              No recent activity
+              found
+            </p>
+          )}
         </div>
       </div>
     </div>

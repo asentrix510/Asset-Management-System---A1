@@ -9,17 +9,50 @@ import {
   FaChartBar,
   FaCog,
   FaBars,
-  FaTimes,
+  FaClipboardList,
 } from "react-icons/fa";
 
 const menuItems = [
-  { name: "Dashboard", path: "/dashboard", icon: <FaTachometerAlt /> },
-  { name: "Users", path: "/users", icon: <FaUsers /> },
-  { name: "Assets", path: "/assets", icon: <FaBoxOpen /> },
-  { name: "Vendors", path: "/vendors", icon: <FaTruck /> },
-  { name: "Maintenance", path: "/maintenance", icon: <FaTools /> },
-  { name: "Reports", path: "/reports", icon: <FaChartBar /> },
-  { name: "Settings", path: "/settings", icon: <FaCog /> },
+  {
+    name: "Dashboard",
+    path: "/dashboard",
+    icon: <FaTachometerAlt />,
+  },
+  {
+    name: "Users",
+    path: "/users",
+    icon: <FaUsers />,
+  },
+  {
+    name: "Assets",
+    path: "/assets",
+    icon: <FaBoxOpen />,
+  },
+  {
+    name: "Assignments",
+    path: "/assignments",
+    icon: <FaClipboardList />,
+  },
+  {
+    name: "Vendors",
+    path: "/vendors",
+    icon: <FaTruck />,
+  },
+  {
+    name: "Maintenance",
+    path: "/maintenance",
+    icon: <FaTools />,
+  },
+  {
+    name: "Reports",
+    path: "/reports",
+    icon: <FaChartBar />,
+  },
+  {
+    name: "Settings",
+    path: "/settings",
+    icon: <FaCog />,
+  },
 ];
 
 export default function Sidebar() {
