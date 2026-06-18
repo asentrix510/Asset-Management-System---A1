@@ -10,10 +10,12 @@ import {
   markAsRead,
   deleteNotification,
 } from "../api/notificationApi";
+import { useAuth } from "./AuthContext";
 
 const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -55,12 +57,17 @@ export const NotificationProvider = ({ children }) => {
     }
   };
 
+  // Only fetch when auth is ready and user is logged in
   useEffect(() => {
+    if (authLoading || !isAuthenticated) {
+      setNotifications([]);
+      return;
+    }
+
     fetchNotifications();
-    // Poll every 60 seconds
     const interval = setInterval(fetchNotifications, 60000);
     return () => clearInterval(interval);
-  }, [fetchNotifications]);
+  }, [isAuthenticated, authLoading, fetchNotifications]);
 
   return (
     <NotificationContext.Provider

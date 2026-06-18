@@ -6,12 +6,12 @@ import { FaBell, FaSignOutAlt, FaUserCircle, FaTrash, FaCheck } from "react-icon
 export default function Navbar({ pageTitle }) {
   const { user, logout } = useAuth();
   const {
-    notifications,
-    unreadCount,
-    loading,
+    notifications = [],
+    unreadCount = 0,
+    loading = false,
     markAsRead,
     deleteNotification,
-  } = useNotifications();
+  } = useNotifications() || {};
 
   const [open, setOpen] = useState(false);
   const panelRef = useRef(null);

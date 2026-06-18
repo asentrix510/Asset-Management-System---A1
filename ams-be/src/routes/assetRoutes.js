@@ -16,6 +16,8 @@ const {
   createAsset,
   updateAsset,
   deleteAsset,
+  getAssetDepreciation,
+  getAllDepreciation,
 } = require(
   "../controllers/assetController"
 );
@@ -50,6 +52,18 @@ router.delete(
   "/:id",
   authorize("Admin"),
   deleteAsset
+);
+
+router.get(
+  "/depreciation",
+  authorize("Admin"),
+  getAllDepreciation
+);
+
+router.get(
+  "/:id/depreciation",
+  authorize("Admin"),
+  getAssetDepreciation
 );
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const db = require("../config/db");
 const Asset = require("../models/Asset");
 const { logAudit } = require("../services/auditService");
+const { calculateDepreciation } = require("../services/depreciationService");
 
 const getAssets = async (req, res) => {
   try {
@@ -163,6 +164,57 @@ const checkWarrantyExpiry = async (req, res) => {
   }
 };
 
+const getAssetDepreciation = async (req, res) => {
+  try {
+    const asset = await Asset.getById(req.params.id);
+
+    if (!asset) {
+      return res.status(404).json({
+        success: false,
+        message: "Asset not found",
+      });
+    }
+
+    const depreciation = calculateDepreciation(asset);
+
+    res.json({
+      success: true,
+      asset_id: asset.asset_id,
+      asset_name: asset.asset_name,
+      asset_code: asset.asset_code,
+      category: asset.category,
+      depreciation,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+const getAllDepreciation = async (req, res) => {
+  try {
+    const assets = await Asset.getAll();
+
+    const report = assets.map((asset) => ({
+      asset_id: asset.asset_id,
+      asset_name: asset.asset_name,
+      asset_code: asset.asset_code,
+      category: asset.category,
+      status: asset.status,
+      purchase_date: asset.purchase_date,
+      depreciation: calculateDepreciation(asset),
+    }));
+
+    res.json({
+      success: true,
+      report,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 module.exports = {
   getAssets,
   getAssetById,
@@ -170,4 +222,6 @@ module.exports = {
   updateAsset,
   deleteAsset,
   checkWarrantyExpiry,
+  getAssetDepreciation,
+  getAllDepreciation,
 };

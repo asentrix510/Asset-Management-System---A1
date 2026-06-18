@@ -27,6 +27,10 @@ const notificationRoutes =
   require(
     "./routes/notificationRoutes"
   );
+const reportRoutes =
+  require(
+    "./routes/reportRoutes"
+  );
 const app = express();
 
 app.use(cors());
@@ -58,6 +62,10 @@ app.use(
 app.use(
   "/api/notifications",
   notificationRoutes
+);
+app.use(
+  "/api/reports",
+  reportRoutes
 );
 app.get("/api/health", (req, res) => {
   res.status(200).json({
