@@ -1,3 +1,4 @@
+const db = require("../config/db");
 const AssetAssignment = require(
   "../models/AssetAssignment"
 );
@@ -38,6 +39,23 @@ const assignAsset =
         description: `Asset assigned`,
       });
 
+      await db.query(
+        `
+        INSERT INTO notifications
+        (
+          title,
+          message,
+          type
+        )
+        VALUES (?, ?, ?)
+        `,
+        [
+          "Asset Assigned",
+          `Asset assigned successfully`,
+          "Assignment",
+        ]
+      );
+
       res.status(201).json({
         success: true,
         message: "Asset assigned",
@@ -66,6 +84,23 @@ const returnAsset =
         record_id: req.params.id,
         description: `Asset returned`,
       });
+
+      await db.query(
+        `
+        INSERT INTO notifications
+        (
+          title,
+          message,
+          type
+        )
+        VALUES (?, ?, ?)
+        `,
+        [
+          "Asset Returned",
+          `Asset returned successfully`,
+          "Return",
+        ]
+      );
 
       res.json({
         success: true,

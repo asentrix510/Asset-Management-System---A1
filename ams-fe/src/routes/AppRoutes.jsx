@@ -13,6 +13,7 @@ import AdminRoute from "./AdminRoute";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import AssetDetailsPage from "../pages/assets/AssetDetailsPage";
 import Audit from "../pages/audit/Audit";
+import Notifications from "../pages/notifications/Notifications";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -107,7 +108,14 @@ export default function AppRoutes() {
           </AdminRoute>
         }
       />
-
+      <Route
+        path="/notifications"
+        element={
+          <AdminRoute>
+            <Notifications />
+          </AdminRoute>
+        }
+      />
       <Route
         path="/settings"
         element={

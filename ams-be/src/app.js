@@ -23,6 +23,10 @@ const dashboardRoutes =
   require(
     "./routes/maintenanceRoutes"
   );
+const notificationRoutes =
+  require(
+    "./routes/notificationRoutes"
+  );
 const app = express();
 
 app.use(cors());
@@ -50,6 +54,10 @@ app.use(
 app.use(
   "/api/maintenance",
   maintenanceRoutes
+);
+app.use(
+  "/api/notifications",
+  notificationRoutes
 );
 app.get("/api/health", (req, res) => {
   res.status(200).json({

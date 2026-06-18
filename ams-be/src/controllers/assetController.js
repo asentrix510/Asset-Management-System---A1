@@ -1,3 +1,4 @@
+const db = require("../config/db");
 const Asset = require("../models/Asset");
 const { logAudit } = require("../services/auditService");
 
@@ -120,6 +121,47 @@ const deleteAsset = async (req, res) => {
     });
   }
 };
+const checkWarrantyExpiry = async (req, res) => {
+  try {
+    const [expiringAssets] = await db.query(`
+      SELECT *
+      FROM assets
+      WHERE warranty_expiry <= DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+    `);
+
+    for (const asset of expiringAssets) {
+      await db.query(
+        `
+        INSERT INTO notifications
+        (
+          title,
+          message,
+          type
+        )
+        VALUES (?, ?, ?)
+        `,
+        [
+          "Warranty Expiry Alert",
+          `${asset.asset_name} warranty expires soon`,
+          "Warranty",
+        ]
+      );
+    }
+
+    res.json({
+      success: true,
+      message: "Warranty check complete",
+      count: expiringAssets.length,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
 
 module.exports = {
   getAssets,
@@ -127,4 +169,5 @@ module.exports = {
   createAsset,
   updateAsset,
   deleteAsset,
+  checkWarrantyExpiry,
 };

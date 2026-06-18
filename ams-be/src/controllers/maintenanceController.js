@@ -126,7 +126,22 @@ exports.createMaintenance =
         record_id: result.insertId,
         description: `Created maintenance record`,
       });
-
+      await db.query(
+  `
+  INSERT INTO notifications
+  (
+    title,
+    message,
+    type
+  )
+  VALUES (?, ?, ?)
+  `,
+  [
+    "Maintenance Created",
+    `Asset sent for maintenance`,
+    "Maintenance",
+  ]
+);
       res.status(201).json({
         success: true,
         message:
