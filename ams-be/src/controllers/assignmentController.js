@@ -1,6 +1,7 @@
 const AssetAssignment = require(
   "../models/AssetAssignment"
 );
+const { logAudit } = require("../services/auditService");
 
 const getAssignments =
   async (req, res) => {
@@ -29,6 +30,14 @@ const assignAsset =
         req.body
       );
 
+      await logAudit({
+        user_id: req.user.userId,
+        action: "ASSET_ASSIGNED",
+        module_name: "ASSIGNMENTS",
+        record_id: null,
+        description: `Asset assigned`,
+      });
+
       res.status(201).json({
         success: true,
         message: "Asset assigned",
@@ -49,6 +58,14 @@ const returnAsset =
       await AssetAssignment.returnAsset(
         req.params.id
       );
+
+      await logAudit({
+        user_id: req.user.userId,
+        action: "ASSET_RETURNED",
+        module_name: "ASSIGNMENTS",
+        record_id: req.params.id,
+        description: `Asset returned`,
+      });
 
       res.json({
         success: true,

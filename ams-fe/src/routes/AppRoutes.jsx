@@ -11,7 +11,8 @@ import Settings from "../pages/settings/Settings";
 import Assignments from "../pages/assignments/Assignments";
 import AdminRoute from "./AdminRoute";
 import DashboardLayout from "../components/layout/DashboardLayout";
-
+import AssetDetailsPage from "../pages/assets/AssetDetailsPage";
+import Audit from "../pages/audit/Audit";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -82,6 +83,20 @@ export default function AppRoutes() {
         }
       />
 
+      <Route
+        path="/assets/:id"
+        element={<AssetDetailsPage />}
+      />
+      <Route
+        path="/audit"
+        element={
+          <AdminRoute>
+            <DashboardLayout>
+              <Audit />
+            </DashboardLayout>
+          </AdminRoute>
+        }
+      />
       <Route
         path="/reports"
         element={

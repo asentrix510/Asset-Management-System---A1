@@ -68,3 +68,15 @@ export const getRecentActivity =
 
     return response.data;
   };
+
+export const getAuditLogs = async () => {
+  const response = await api.get(
+    "/dashboard/audit",
+    {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    }
+  );
+  return response.data;
+};

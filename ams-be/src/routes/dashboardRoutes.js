@@ -7,10 +7,22 @@ const {
   getStatusChart,
   getCategoryChart,
   getRecentActivity,
+  getAuditLogs,
 } = require("../controllers/dashboardController");
 
 const authMiddleware = require(
   "../middleware/authMiddleware"
+);
+
+const roleMiddleware = require(
+  "../middleware/roleMiddleware"
+);
+
+router.get(
+  "/audit",
+  authMiddleware,
+  roleMiddleware("Admin"),
+  getAuditLogs
 );
 
 router.get(

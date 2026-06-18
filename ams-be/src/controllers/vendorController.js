@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const { logAudit } = require("../services/auditService");
 
 exports.getVendors = async (req, res) => {
   try {
@@ -84,10 +85,20 @@ exports.createVendor = async (req, res) => {
       ]
     );
 
+    const vendorId = result.insertId;
+
+    await logAudit({
+      user_id: req.user.userId,
+      action: "VENDOR_CREATE",
+      module_name: "VENDORS",
+      record_id: vendorId,
+      description: `Created vendor ${vendor_name}`,
+    });
+
     res.status(201).json({
       success: true,
       message: "Vendor created successfully",
-      vendorId: result.insertId,
+      vendorId,
     });
   } catch (error) {
     console.error(error);
@@ -132,6 +143,14 @@ exports.updateVendor = async (req, res) => {
       ]
     );
 
+    await logAudit({
+      user_id: req.user.userId,
+      action: "VENDOR_UPDATE",
+      module_name: "VENDORS",
+      record_id: id,
+      description: `Updated vendor ${id}`,
+    });
+
     res.json({
       success: true,
       message: "Vendor updated successfully",
@@ -157,6 +176,14 @@ exports.deleteVendor = async (req, res) => {
       `,
       [id]
     );
+
+    await logAudit({
+      user_id: req.user.userId,
+      action: "VENDOR_DELETE",
+      module_name: "VENDORS",
+      record_id: id,
+      description: `Deleted vendor ${id}`,
+    });
 
     res.json({
       success: true,

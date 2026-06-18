@@ -10,6 +10,7 @@ import {
   FaCog,
   FaBars,
   FaClipboardList,
+  FaHistory,
 } from "react-icons/fa";
 
 const menuItems = [
@@ -53,6 +54,11 @@ const menuItems = [
     path: "/settings",
     icon: <FaCog />,
   },
+  {
+  name: "Audit Trail",
+  path: "/audit",
+  icon: <FaHistory />,
+},
 ];
 
 export default function Sidebar() {

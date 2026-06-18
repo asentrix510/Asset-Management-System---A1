@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const db = require("../config/db");
+const { logAudit } = require("../services/auditService");
 
 const login = async (req, res) => {
   try {
@@ -50,6 +51,14 @@ const login = async (req, res) => {
         expiresIn: "7d",
       }
     );
+
+    await logAudit({
+      user_id: user.user_id,
+      action: "LOGIN",
+      module_name: "AUTH",
+      record_id: user.user_id,
+      description: `${user.name} logged into system`,
+    });
 
     res.status(200).json({
       success: true,

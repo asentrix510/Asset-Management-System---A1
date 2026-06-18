@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const { logAudit } = require("../services/auditService");
 
 exports.getMaintenanceRecords =
   async (req, res) => {
@@ -118,6 +119,14 @@ exports.createMaintenance =
         [asset_id]
       );
 
+      await logAudit({
+        user_id: req.user.userId,
+        action: "MAINTENANCE_CREATE",
+        module_name: "MAINTENANCE",
+        record_id: result.insertId,
+        description: `Created maintenance record`,
+      });
+
       res.status(201).json({
         success: true,
         message:
@@ -188,6 +197,14 @@ exports.updateMaintenance =
         );
       }
 
+      await logAudit({
+        user_id: req.user.userId,
+        action: "MAINTENANCE_UPDATE",
+        module_name: "MAINTENANCE",
+        record_id: id,
+        description: `Updated maintenance record`,
+      });
+
       res.json({
         success: true,
         message:
@@ -217,6 +234,14 @@ exports.deleteMaintenance =
         `,
         [id]
       );
+
+      await logAudit({
+        user_id: req.user.userId,
+        action: "MAINTENANCE_DELETE",
+        module_name: "MAINTENANCE",
+        record_id: id,
+        description: `Deleted maintenance record`,
+      });
 
       res.json({
         success: true,

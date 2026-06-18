@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
+const { logAudit } = require("../services/auditService");
 
 const getUsers = async (req, res) => {
   try {
@@ -71,6 +72,14 @@ const createUser = async (req, res) => {
       role,
     });
 
+    await logAudit({
+      user_id: req.user.userId,
+      action: "USER_CREATE",
+      module_name: "USERS",
+      record_id: null,
+      description: `Created user ${name}`,
+    });
+
     res.status(201).json({
       success: true,
       message: "User created",
@@ -92,6 +101,14 @@ const updateUser = async (req, res) => {
       req.body
     );
 
+    await logAudit({
+      user_id: req.user.userId,
+      action: "USER_UPDATE",
+      module_name: "USERS",
+      record_id: req.params.id,
+      description: `Updated user ${req.params.id}`,
+    });
+
     res.json({
       success: true,
       message: "User updated",
@@ -109,6 +126,14 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     await User.delete(req.params.id);
+
+    await logAudit({
+      user_id: req.user.userId,
+      action: "USER_DELETE",
+      module_name: "USERS",
+      record_id: req.params.id,
+      description: `Deleted user ${req.params.id}`,
+    });
 
     res.json({
       success: true,

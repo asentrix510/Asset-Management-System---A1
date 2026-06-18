@@ -1,5 +1,29 @@
 const db = require("../config/db");
+exports.getAuditLogs = async (req, res) => {
+  try {
+    const [logs] = await db.query(`
+      SELECT
+        a.*,
+        u.name AS user_name
+      FROM audit_logs a
+      LEFT JOIN users u
+        ON a.user_id = u.user_id
+      ORDER BY a.created_at DESC
+    `);
 
+    res.json({
+      success: true,
+      logs,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
 exports.getDashboardStats =
   async (req, res) => {
     try {

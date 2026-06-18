@@ -1,4 +1,5 @@
 const Asset = require("../models/Asset");
+const { logAudit } = require("../services/auditService");
 
 const getAssets = async (req, res) => {
   try {
@@ -47,6 +48,14 @@ const createAsset = async (req, res) => {
   try {
     await Asset.create(req.body);
 
+    await logAudit({
+      user_id: req.user.userId,
+      action: "ASSET_CREATE",
+      module_name: "ASSETS",
+      record_id: null,
+      description: `Created asset ${req.body.asset_name}`,
+    });
+
     res.status(201).json({
       success: true,
       message: "Asset created",
@@ -68,6 +77,14 @@ const updateAsset = async (req, res) => {
       req.body
     );
 
+    await logAudit({
+      user_id: req.user.userId,
+      action: "ASSET_UPDATE",
+      module_name: "ASSETS",
+      record_id: req.params.id,
+      description: `Updated asset ${req.params.id}`,
+    });
+
     res.json({
       success: true,
       message: "Asset updated",
@@ -83,6 +100,14 @@ const updateAsset = async (req, res) => {
 const deleteAsset = async (req, res) => {
   try {
     await Asset.delete(req.params.id);
+
+    await logAudit({
+      user_id: req.user.userId,
+      action: "ASSET_DELETE",
+      module_name: "ASSETS",
+      record_id: req.params.id,
+      description: `Deleted asset ${req.params.id}`,
+    });
 
     res.json({
       success: true,
