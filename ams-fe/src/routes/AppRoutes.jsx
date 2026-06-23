@@ -10,15 +10,26 @@ import Reports from "../pages/reports/Reports";
 import Settings from "../pages/settings/Settings";
 import Assignments from "../pages/assignments/Assignments";
 import AdminRoute from "./AdminRoute";
+import UserRoute from "./UserRoute";
 import DashboardLayout from "../components/layout/DashboardLayout";
+import UserLayout from "../components/layout/UserLayout";
 import AssetDetailsPage from "../pages/assets/AssetDetailsPage";
 import Audit from "../pages/audit/Audit";
 import Notifications from "../pages/notifications/Notifications";
+
+// User portal pages
+import UserDashboard from "../pages/user/UserDashboard";
+import MyAssets from "../pages/user/MyAssets";
+import MyMaintenance from "../pages/user/MyMaintenance";
+import Profile from "../pages/user/Profile";
+
 export default function AppRoutes() {
   return (
     <Routes>
+      {/* ── Public ── */}
       <Route path="/" element={<Login />} />
 
+      {/* ── Admin routes ── */}
       <Route
         path="/dashboard"
         element={
@@ -51,6 +62,7 @@ export default function AppRoutes() {
           </AdminRoute>
         }
       />
+
       <Route
         path="/assignments"
         element={
@@ -88,6 +100,7 @@ export default function AppRoutes() {
         path="/assets/:id"
         element={<AssetDetailsPage />}
       />
+
       <Route
         path="/audit"
         element={
@@ -98,6 +111,7 @@ export default function AppRoutes() {
           </AdminRoute>
         }
       />
+
       <Route
         path="/reports"
         element={
@@ -108,6 +122,7 @@ export default function AppRoutes() {
           </AdminRoute>
         }
       />
+
       <Route
         path="/notifications"
         element={
@@ -116,6 +131,7 @@ export default function AppRoutes() {
           </AdminRoute>
         }
       />
+
       <Route
         path="/settings"
         element={
@@ -124,6 +140,51 @@ export default function AppRoutes() {
               <Settings />
             </DashboardLayout>
           </AdminRoute>
+        }
+      />
+
+      {/* ── User (Employee) Portal routes ── */}
+      <Route
+        path="/user/dashboard"
+        element={
+          <UserRoute>
+            <UserLayout>
+              <UserDashboard />
+            </UserLayout>
+          </UserRoute>
+        }
+      />
+
+      <Route
+        path="/user/my-assets"
+        element={
+          <UserRoute>
+            <UserLayout>
+              <MyAssets />
+            </UserLayout>
+          </UserRoute>
+        }
+      />
+
+      <Route
+        path="/user/my-maintenance"
+        element={
+          <UserRoute>
+            <UserLayout>
+              <MyMaintenance />
+            </UserLayout>
+          </UserRoute>
+        }
+      />
+
+      <Route
+        path="/user/profile"
+        element={
+          <UserRoute>
+            <UserLayout>
+              <Profile />
+            </UserLayout>
+          </UserRoute>
         }
       />
     </Routes>
