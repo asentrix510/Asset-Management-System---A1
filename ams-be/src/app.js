@@ -31,7 +31,6 @@ const reportRoutes =
   require(
     "./routes/reportRoutes"
   );
-const userPortalRoutes = require("./routes/userPortalRoutes");
 const app = express();
 
 app.use(cors());
@@ -68,7 +67,6 @@ app.use(
   "/api/reports",
   reportRoutes
 );
-app.use("/api/portal", userPortalRoutes);
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     success: true,

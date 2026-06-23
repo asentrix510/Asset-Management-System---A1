@@ -69,7 +69,6 @@ const createUser = async (req, res) => {
       phone,
       email,
       password: hashedPassword,
-      plain_password: password,
       role,
     });
 
@@ -97,15 +96,9 @@ const createUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const data = { ...req.body };
-    if (data.password) {
-      data.plain_password = data.password;
-      data.password = await bcrypt.hash(data.password, 10);
-    }
-
     await User.update(
       req.params.id,
-      data
+      req.body
     );
 
     await logAudit({
