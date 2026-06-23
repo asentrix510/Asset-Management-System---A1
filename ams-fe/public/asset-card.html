@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asset Card</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 400px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+    }
+
+    /* Header strip */
+    .card-header {
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      padding: 20px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-header::after {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 120px; height: 120px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
+    .card-header::before {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: -20px;
+      width: 150px; height: 150px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+    .org-label {
+      color: rgba(255,255,255,0.7);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .asset-name {
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+    .asset-code {
+      color: rgba(255,255,255,0.75);
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 4px;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.5px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Status badge */
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: #f8fafc;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .status-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .status-Available { background: #dcfce7; color: #15803d; }
+    .status-Available::before { background: #16a34a; }
+    .status-Assigned { background: #dbeafe; color: #1d4ed8; }
+    .status-Assigned::before { background: #2563eb; }
+    .status-Maintenance { background: #fef3c7; color: #b45309; }
+    .status-Maintenance::before { background: #d97706; }
+    .status-Retired { background: #fee2e2; color: #b91c1c; }
+    .status-Retired::before { background: #dc2626; }
+    .category-tag {
+      background: #ede9fe;
+      color: #6d28d9;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* Info rows */
+    .info-section { padding: 8px 24px 16px; }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .info-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e293b;
+      text-align: right;
+      max-width: 200px;
+      word-break: break-word;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, #e2e8f0, transparent);
+      margin: 0 24px;
+    }
+
+    /* Footer */
+    .card-footer {
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+    }
+    .footer-label {
+      font-size: 10px;
+      color: #cbd5e1;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .footer-system {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+    }
+
+    /* Error state */
+    .error-card {
+      background: white;
+      border-radius: 16px;
+      padding: 40px 32px;
+      text-align: center;
+      max-width: 320px;
+    }
+    .error-icon { font-size: 48px; margin-bottom: 16px; }
+    .error-title { font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 8px; }
+    .error-msg { font-size: 13px; color: #94a3b8; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script>
+    function fmt(date) {
+      if (!date) return null;
+      try {
+        return new Date(date).toLocaleDateString('en-IN', {
+          day: '2-digit', month: 'short', year: 'numeric'
+        });
+      } catch { return date; }
+    }
+
+    function fmtCost(cost, currency) {
+      if (cost == null || cost === '') return null;
+      const sym = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : currency === 'GBP' ? '£' : '₹';
+      return `${sym}${Number(cost).toLocaleString('en-IN')}`;
+    }
+
+    function statusClass(status) {
+      return 'status-' + (status || 'Available').replace(/\s+/g, '');
+    }
+
+    function row(label, value) {
+      if (!value) return '';
+      return `
+        <div class="info-row">
+          <span class="info-label">${label}</span>
+          <span class="info-value">${value}</span>
+        </div>`;
+    }
+
+    function render() {
+      const params = new URLSearchParams(window.location.search);
+      const encoded = params.get('d');
+      const root = document.getElementById('root');
+
+      if (!encoded) {
+        root.innerHTML = `
+          <div class="error-card">
+            <div class="error-icon">🔍</div>
+            <div class="error-title">No Asset Data</div>
+            <div class="error-msg">This QR code does not contain any asset information. Please scan a valid asset QR code.</div>
+          </div>`;
+        return;
+      }
+
+      let asset;
+      try {
+        asset = JSON.parse(atob(encoded));
+      } catch (e) {
+        root.innerHTML = `
+          <div class="error-card">
+            <div class="error-icon">⚠️</div>
+            <div class="error-title">Invalid QR Code</div>
+            <div class="error-msg">Could not read asset data from this QR code. It may be corrupted or outdated.</div>
+          </div>`;
+        return;
+      }
+
+      const currency = asset.currency || 'INR';
+
+      document.title = `${asset.asset_name || 'Asset'} — AMS`;
+
+      root.innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div class="org-label">${asset.org_name || 'Asset Management System'}</div>
+            <div class="asset-name">${asset.asset_name || '—'}</div>
+            <div class="asset-code">${asset.asset_code || ''}</div>
+          </div>
+
+          <div class="status-row">
+            <span class="status-badge ${statusClass(asset.status)}">${asset.status || 'Unknown'}</span>
+            ${asset.category ? `<span class="category-tag">${asset.category}</span>` : ''}
+          </div>
+
+          <div class="info-section">
+            ${row('Brand', asset.brand)}
+            ${row('Model', asset.model)}
+            ${row('Serial No.', asset.serial_number)}
+            ${row('Vendor', asset.vendor_name)}
+            ${row('Purchase Date', fmt(asset.purchase_date))}
+            ${row('Purchase Cost', fmtCost(asset.purchase_cost, currency))}
+            ${row('Warranty Expiry', fmt(asset.warranty_expiry))}
+            ${asset.description ? row('Notes', asset.description) : ''}
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="card-footer">
+            <span class="footer-label">Scanned offline</span>
+            <span class="footer-system">AMS v1</span>
+          </div>
+        </div>`;
+    }
+
+    render();
+  </script>
+</body>
+</html>

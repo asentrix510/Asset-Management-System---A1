@@ -129,7 +129,7 @@ export default function AssetDetails({ asset, depreciation }) {
       {/* QR Code */}
       <div className="lg:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
         <h2 className="text-base font-bold text-slate-800 mb-4 self-start">QR Code</h2>
-        <QRCodeGenerator assetId={asset.asset_id} />
+        <QRCodeGenerator asset={asset} />
       </div>
 
     </div>
