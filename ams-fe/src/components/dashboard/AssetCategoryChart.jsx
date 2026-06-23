@@ -27,7 +27,7 @@ export default function AssetCategoryChart({
 
             <XAxis dataKey="category" />
 
-            <YAxis />
+            <YAxis allowDecimals={false} tickFormatter={(v) => Math.floor(v)} />
 
             <Tooltip />
 

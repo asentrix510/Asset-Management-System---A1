@@ -318,7 +318,12 @@ export default function Reports() {
                 <input
                   type="date"
                   value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
+                  max={endDate || undefined}
+                  onChange={(e) => {
+                    setStartDate(e.target.value);
+                    // clear end date if it's now before the new start
+                    if (endDate && e.target.value > endDate) setEndDate("");
+                  }}
                   className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:border-blue-500 transition-colors"
                 />
               </div>
@@ -329,6 +334,7 @@ export default function Reports() {
                 <input
                   type="date"
                   value={endDate}
+                  min={startDate || undefined}
                   onChange={(e) => setEndDate(e.target.value)}
                   className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:border-blue-500 transition-colors"
                 />

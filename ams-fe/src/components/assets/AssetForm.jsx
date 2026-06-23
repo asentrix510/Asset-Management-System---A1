@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getVendors } from "../../api/vendorApi";
 
 const INITIAL_STATE = {
   asset_code: "",
@@ -16,6 +17,14 @@ const INITIAL_STATE = {
 };
 
 export default function AssetForm({ onSubmit, initialData, isEditing }) {
+  const [vendors, setVendors] = useState([]);
+
+  useEffect(() => {
+    getVendors()
+      .then((data) => setVendors(data.vendors || []))
+      .catch(() => setVendors([]));
+  }, []);
+
   const [formData, setFormData] = useState(INITIAL_STATE);
 
   useEffect(() => {
@@ -202,16 +211,21 @@ export default function AssetForm({ onSubmit, initialData, isEditing }) {
 
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium text-slate-600">
-            Vendor Name
+            Vendor
           </label>
-          <input
-            type="text"
+          <select
             name="vendor_name"
-            placeholder="e.g. Tech Supplies Co."
             value={formData.vendor_name}
             onChange={handleChange}
-            className="border border-slate-200 p-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
+            className="border border-slate-200 p-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+          >
+            <option value="">— Select Vendor —</option>
+            {vendors.map((v) => (
+              <option key={v.vendor_id} value={v.vendor_name}>
+                {v.vendor_name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="flex flex-col gap-1">
