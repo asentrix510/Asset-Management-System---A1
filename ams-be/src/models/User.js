@@ -10,6 +10,8 @@ const User = {
         designation,
         phone,
         email,
+        password,
+        plain_password,
         role
       FROM users
       ORDER BY name
@@ -28,6 +30,8 @@ const User = {
         designation,
         phone,
         email,
+        password,
+        plain_password,
         role
       FROM users
       WHERE user_id = ?
@@ -49,11 +53,12 @@ const User = {
         phone,
         email,
         password,
+        plain_password,
         role
       )
       VALUES (
         UUID(),
-        ?,?,?,?,?,?,?
+        ?,?,?,?,?,?,?,?
       )
     `,
       [
@@ -63,6 +68,7 @@ const User = {
         userData.phone,
         userData.email,
         userData.password,
+        userData.plain_password,
         userData.role,
       ]
     );
@@ -71,8 +77,7 @@ const User = {
   },
 
   update: async (id, userData) => {
-    const [result] = await db.query(
-      `
+    let query = `
       UPDATE users
       SET
         name=?,
@@ -81,19 +86,25 @@ const User = {
         phone=?,
         email=?,
         role=?
-      WHERE user_id=?
-    `,
-      [
-        userData.name,
-        userData.department,
-        userData.designation,
-        userData.phone,
-        userData.email,
-        userData.role,
-        id,
-      ]
-    );
+    `;
+    const params = [
+      userData.name,
+      userData.department,
+      userData.designation,
+      userData.phone,
+      userData.email,
+      userData.role,
+    ];
 
+    if (userData.password) {
+      query += `, password=?, plain_password=?`;
+      params.push(userData.password, userData.plain_password);
+    }
+
+    query += ` WHERE user_id=?`;
+    params.push(id);
+
+    const [result] = await db.query(query, params);
     return result;
   },
 

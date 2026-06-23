@@ -26,3 +26,14 @@ export const deleteUser = (
       Authorization: `Bearer ${token}`,
     },
   });
+
+export const updateUser = (
+  token,
+  id,
+  userData
+) =>
+  api.put(`/users/${id}`, userData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });

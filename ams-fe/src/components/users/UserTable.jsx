@@ -1,4 +1,4 @@
-export default function UserTable({ users, onDelete }) {
+export default function UserTable({ users, onDelete, onViewDetails, onEdit }) {
   if (!users?.length) {
     return (
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-10 text-center">
@@ -23,7 +23,14 @@ export default function UserTable({ users, onDelete }) {
           <tbody className="divide-y divide-slate-50">
             {users.map((user) => (
               <tr key={user.user_id} className="hover:bg-slate-50/50 transition-colors">
-                <td className="px-5 py-3.5 font-medium text-slate-800">{user.name}</td>
+                <td className="px-5 py-3.5 font-medium text-slate-800">
+                  <button
+                    onClick={() => onViewDetails && onViewDetails(user)}
+                    className="hover:underline hover:text-blue-600 focus:outline-none transition-colors text-left font-semibold"
+                  >
+                    {user.name}
+                  </button>
+                </td>
                 <td className="px-5 py-3.5 text-slate-500">{user.email}</td>
                 <td className="px-5 py-3.5 text-slate-500">{user.department || "—"}</td>
                 <td className="px-5 py-3.5">
@@ -38,6 +45,12 @@ export default function UserTable({ users, onDelete }) {
                   </span>
                 </td>
                 <td className="px-5 py-3.5">
+                  <button
+                    onClick={() => onEdit && onEdit(user)}
+                    className="text-xs font-semibold text-blue-600 hover:text-blue-800 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors mr-2"
+                  >
+                    Edit
+                  </button>
                   <button
                     onClick={() => onDelete(user.user_id)}
                     className="text-xs font-semibold text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors"
