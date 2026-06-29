@@ -1,122 +1,170 @@
 import { Link } from "react-router-dom";
+import {
+  Laptop,
+  Tv,
+  Wifi,
+  Printer,
+  Smartphone,
+  Package,
+  Armchair,
+  Eye,
+  Edit2,
+  Trash2
+} from "lucide-react";
 
 const STATUS_STYLES = {
-  Available: "bg-green-100 text-green-700",
-  Assigned: "bg-blue-100 text-blue-700",
-  Maintenance: "bg-yellow-100 text-yellow-700",
-  Retired: "bg-red-100 text-red-700",
+  Available: "bg-emerald-50 text-emerald-700 border-emerald-100",
+  Assigned: "bg-blue-50 text-blue-700 border-blue-100",
+  Maintenance: "bg-amber-50 text-amber-700 border-amber-100",
+  Retired: "bg-rose-50 text-rose-700 border-rose-100",
 };
 
-function fmt(date) {
-  if (!date) return "—";
-  return new Date(date).toLocaleDateString();
+const getCategoryIcon = (category) => {
+  const cat = category?.toLowerCase() || "";
+  if (cat.includes("laptop")) return <Laptop className="w-4 h-4 text-blue-600" />;
+  if (cat.includes("monitor")) return <Tv className="w-4 h-4 text-indigo-600" />;
+  if (cat.includes("router")) return <Wifi className="w-4 h-4 text-cyan-600" />;
+  if (cat.includes("printer")) return <Printer className="w-4 h-4 text-amber-600" />;
+  if (cat.includes("mobile") || cat.includes("phone") || cat.includes("tab")) {
+    return <Smartphone className="w-4 h-4 text-emerald-600" />;
+  }
+  if (cat.includes("furniture") || cat.includes("chair") || cat.includes("desk")) {
+    return <Armchair className="w-4 h-4 text-rose-600" />;
+  }
+  return <Package className="w-4 h-4 text-slate-500" />;
+};
+
+function formatDate(d) {
+  if (!d) return "—";
+  const date = new Date(d);
+  if (isNaN(date.getTime())) return d;
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
 }
 
 function fmtCost(cost) {
   if (cost == null || cost === "") return "—";
-  return `₹${Number(cost).toLocaleString()}`;
+  return `₹${Number(cost).toLocaleString("en-IN")}`;
 }
 
 export default function AssetTable({ assets, onDelete, onEdit }) {
   return (
-    <div className="bg-white rounded-xl shadow overflow-x-auto">
-      <table className="w-full min-w-[900px]">
-        <thead>
-          <tr className="border-b bg-slate-50 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
-            <th className="p-3">Code</th>
-            <th className="p-3">Name</th>
-            <th className="p-3">Category</th>
-            <th className="p-3">Vendor</th>
-            <th className="p-3">Purchase Date</th>
-            <th className="p-3">Cost</th>
-            <th className="p-3">Warranty Expiry</th>
-            <th className="p-3">Status</th>
-            <th className="p-3">Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {assets.length === 0 ? (
-            <tr>
-              <td
-                colSpan={9}
-                className="p-6 text-center text-slate-400 text-sm"
-              >
-                No assets found.
-              </td>
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-100/80 overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[960px] text-left border-collapse">
+          <thead>
+            <tr className="border-b border-slate-100 bg-slate-50/70 text-2xs font-extrabold text-slate-400 uppercase tracking-wider select-none">
+              <th className="px-5 py-4 w-28">Asset Code</th>
+              <th className="px-5 py-4">Hardware Info</th>
+              <th className="px-5 py-4">Category</th>
+              <th className="px-5 py-4">Vendor</th>
+              <th className="px-5 py-4">Purchase Date</th>
+              <th className="px-5 py-4">Cost</th>
+              <th className="px-5 py-4">Warranty</th>
+              <th className="px-5 py-4">Status</th>
+              <th className="px-5 py-4 text-center">Actions</th>
             </tr>
-          ) : (
-            assets.map((asset) => (
-              <tr
-                key={asset.asset_id}
-                className="border-b last:border-0 hover:bg-slate-50 transition-colors"
-              >
-                <td className="p-3 text-sm font-mono text-slate-700">
-                  {asset.asset_code}
-                </td>
+          </thead>
 
-                <td className="p-3 text-sm font-medium text-slate-800">
-                  {asset.asset_name}
-                </td>
-
-                <td className="p-3 text-sm text-slate-600">
-                  {asset.category}
-                </td>
-
-                <td className="p-3 text-sm text-slate-600">
-                  {asset.vendor_name || "—"}
-                </td>
-
-                <td className="p-3 text-sm text-slate-600">
-                  {fmt(asset.purchase_date)}
-                </td>
-
-                <td className="p-3 text-sm text-slate-600">
-                  {fmtCost(asset.purchase_cost)}
-                </td>
-
-                <td className="p-3 text-sm text-slate-600">
-                  {fmt(asset.warranty_expiry)}
-                </td>
-
-                <td className="p-3">
-                  <span
-                    className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
-                      STATUS_STYLES[asset.status] ||
-                      "bg-slate-100 text-slate-600"
-                    }`}
-                  >
-                    {asset.status}
-                  </span>
-                </td>
-
-                <td className="p-3 flex gap-2 flex-wrap">
-                  <Link
-                    to={`/assets/${asset.asset_id}`}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-medium transition-colors"
-                  >
-                    View
-                  </Link>
-
-                  <button
-                    onClick={() => onEdit(asset)}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-xs font-medium transition-colors"
-                  >
-                    Edit
-                  </button>
-
-                  <button
-                    onClick={() => onDelete(asset.asset_id)}
-                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs font-medium transition-colors"
-                  >
-                    Delete
-                  </button>
+          <tbody className="divide-y divide-slate-50 text-xs">
+            {assets.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={9}
+                  className="px-6 py-12 text-center text-slate-400 font-semibold"
+                >
+                  No assets found in database.
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              assets.map((asset) => (
+                <tr
+                  key={asset.asset_id}
+                  className="hover:bg-slate-50/30 transition-colors"
+                >
+                  <td className="px-5 py-4 font-mono font-bold text-slate-500">
+                    {asset.asset_code}
+                  </td>
+
+                  <td className="px-5 py-4">
+                    <p className="font-bold text-slate-800">{asset.asset_name}</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">{asset.brand} · {asset.model || "N/A"}</p>
+                  </td>
+
+                  <td className="px-5 py-4 font-semibold text-slate-600">
+                    <span className="inline-flex items-center gap-1.5">
+                      {getCategoryIcon(asset.category)}
+                      {asset.category}
+                    </span>
+                  </td>
+
+                  <td className="px-5 py-4 text-slate-500 font-medium truncate max-w-[120px]">
+                    {asset.vendor_name || "—"}
+                  </td>
+
+                  <td className="px-5 py-4 text-slate-500 font-semibold">
+                    {formatDate(asset.purchase_date)}
+                  </td>
+
+                  <td className="px-5 py-4 font-bold text-slate-700">
+                    {fmtCost(asset.purchase_cost)}
+                  </td>
+
+                  <td className="px-5 py-4 text-slate-500 font-semibold">
+                    {formatDate(asset.warranty_expiry)}
+                  </td>
+
+                  <td className="px-5 py-4">
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${
+                        STATUS_STYLES[asset.status] ||
+                        "bg-slate-50 text-slate-600 border-slate-100"
+                      }`}
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full ${
+                        asset.status === "Available" ? "bg-emerald-500" :
+                        asset.status === "Assigned" ? "bg-blue-500" :
+                        asset.status === "Maintenance" ? "bg-amber-500 animate-pulse" : "bg-rose-500"
+                      }`}></span>
+                      {asset.status}
+                    </span>
+                  </td>
+
+                  <td className="px-5 py-4">
+                    <div className="flex items-center justify-center gap-2">
+                      <Link
+                        to={`/assets/${asset.asset_id}`}
+                        className="p-1.5 bg-slate-50 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg border border-slate-100 hover:border-blue-100 transition-colors cursor-pointer"
+                        title="View Asset Details"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                      </Link>
+
+                      <button
+                        onClick={() => onEdit(asset)}
+                        className="p-1.5 bg-slate-50 text-slate-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg border border-slate-100 hover:border-amber-100 transition-colors cursor-pointer"
+                        title="Edit Asset"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+
+                      <button
+                        onClick={() => onDelete(asset.asset_id)}
+                        className="p-1.5 bg-slate-50 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg border border-slate-100 hover:border-rose-100 transition-colors cursor-pointer"
+                        title="Delete Asset"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

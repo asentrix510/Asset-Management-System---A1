@@ -1,62 +1,99 @@
+import { Edit2, Trash2 } from "lucide-react";
+
 export default function UserTable({ users, onDelete, onViewDetails, onEdit }) {
+  const getInitials = (name) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
+  };
+
+  const getAvatarBg = (id) => {
+    const gradients = [
+      "from-blue-500 to-indigo-600",
+      "from-purple-500 to-indigo-600",
+      "from-teal-500 to-emerald-600",
+      "from-rose-500 to-pink-600",
+      "from-amber-500 to-orange-600",
+    ];
+    // simple hash to choose gradient consistently
+    const index = id ? id.charCodeAt(0) % gradients.length : 0;
+    return gradients[index];
+  };
+
   if (!users?.length) {
     return (
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-10 text-center">
-        <p className="text-slate-400 text-sm">No users found.</p>
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-10 text-center select-none">
+        <p className="text-slate-400 text-sm font-semibold">No users registered.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-100/80 shadow-sm overflow-hidden select-none">
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-100">
-              <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-5 py-3.5">Name</th>
-              <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-5 py-3.5">Email</th>
-              <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-5 py-3.5">Department</th>
-              <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-5 py-3.5">Role</th>
-              <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-5 py-3.5">Actions</th>
+            <tr className="bg-slate-50/70 border-b border-slate-100 text-2xs font-extrabold text-slate-400 uppercase tracking-wider">
+              <th className="px-6 py-4">Employee</th>
+              <th className="px-6 py-4">Email</th>
+              <th className="px-6 py-4">Department</th>
+              <th className="px-6 py-4">Role</th>
+              <th className="px-6 py-4 text-center">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-50">
+          <tbody className="divide-y divide-slate-50 text-xs">
             {users.map((user) => (
-              <tr key={user.user_id} className="hover:bg-slate-50/50 transition-colors">
-                <td className="px-5 py-3.5 font-medium text-slate-800">
-                  <button
-                    onClick={() => onViewDetails && onViewDetails(user)}
-                    className="hover:underline hover:text-blue-600 focus:outline-none transition-colors text-left font-semibold"
-                  >
-                    {user.name}
-                  </button>
+              <tr key={user.user_id} className="hover:bg-slate-50/30 transition-colors">
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-lg bg-gradient-to-tr ${getAvatarBg(user.user_id)} flex items-center justify-center text-[10px] font-black text-white shadow-sm shrink-0`}>
+                      {getInitials(user.name)}
+                    </div>
+                    <div className="min-w-0">
+                      <button
+                        onClick={() => onViewDetails && onViewDetails(user)}
+                        className="hover:underline hover:text-indigo-600 focus:outline-none transition-colors text-left font-bold text-slate-800 cursor-pointer"
+                      >
+                        {user.name}
+                      </button>
+                      <p className="text-[10px] text-slate-400 mt-0.5">{user.designation || "No Title"}</p>
+                    </div>
+                  </div>
                 </td>
-                <td className="px-5 py-3.5 text-slate-500">{user.email}</td>
-                <td className="px-5 py-3.5 text-slate-500">{user.department || "—"}</td>
-                <td className="px-5 py-3.5">
+                <td className="px-6 py-4 text-slate-500 font-semibold">{user.email}</td>
+                <td className="px-6 py-4 text-slate-500 font-semibold">{user.department || "—"}</td>
+                <td className="px-6 py-4">
                   <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border ${
                       user.role === "Admin"
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-slate-100 text-slate-600"
+                        ? "bg-indigo-50 text-indigo-700 border-indigo-100"
+                        : "bg-slate-50 text-slate-600 border-slate-100"
                     }`}
                   >
-                    {user.role}
+                    {user.role?.toUpperCase()}
                   </span>
                 </td>
-                <td className="px-5 py-3.5">
-                  <button
-                    onClick={() => onEdit && onEdit(user)}
-                    className="text-xs font-semibold text-blue-600 hover:text-blue-800 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors mr-2"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => onDelete(user.user_id)}
-                    className="text-xs font-semibold text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors"
-                  >
-                    Delete
-                  </button>
+                <td className="px-6 py-4">
+                  <div className="flex items-center justify-center gap-2">
+                    <button
+                      onClick={() => onEdit && onEdit(user)}
+                      className="p-1.5 bg-slate-50 text-slate-555 hover:text-indigo-650 hover:bg-indigo-50 rounded-lg border border-slate-100 hover:border-indigo-100 transition-colors cursor-pointer"
+                      title="Edit Employee Profile"
+                    >
+                      <Edit2 className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => onDelete(user.user_id)}
+                      className="p-1.5 bg-slate-50 text-slate-555 hover:text-rose-650 hover:bg-rose-50 rounded-lg border border-slate-100 hover:border-rose-100 transition-colors cursor-pointer"
+                      title="Delete User"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

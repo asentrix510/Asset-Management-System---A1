@@ -1,8 +1,23 @@
 import { useState, useEffect } from "react";
+import {
+  Building2,
+  Sliders,
+  Lock,
+  Bell,
+  User,
+  Database,
+  Save,
+  Download,
+  Upload,
+  AlertTriangle,
+  Check,
+  X,
+  ChevronRight
+} from "lucide-react";
 
 /* ─────────────────────────────────────────
    Helpers
-───────────────────────────────────────── */
+ ───────────────────────────────────────── */
 const STORAGE_KEY = "ams_settings";
 
 const DEFAULTS = {
@@ -56,30 +71,36 @@ function save(data) {
 
 /* ─────────────────────────────────────────
    Sub-components
-───────────────────────────────────────── */
-function SectionCard({ title, icon, children }) {
+ ───────────────────────────────────────── */
+function SectionCard({ title, icon: Icon, children }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-      <div className="flex items-center gap-3 px-6 py-4 border-b border-slate-50">
-        <span className="text-xl">{icon}</span>
-        <h2 className="text-base font-bold text-slate-800">{title}</h2>
+    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden select-none">
+      <div className="flex items-center gap-3 px-6 py-4 border-b border-slate-50 bg-slate-50/30">
+        <Icon className="w-5 h-5 text-indigo-500" />
+        <h2 className="text-base font-bold text-slate-800 tracking-tight">{title}</h2>
       </div>
-      <div className="p-6 space-y-5">{children}</div>
+      <div className="p-6 space-y-6">{children}</div>
     </div>
   );
 }
 
 function Field({ label, hint, children }) {
   return (
-    <div className="flex flex-col md:flex-row md:items-start gap-2 md:gap-6">
+    <div className="flex flex-col md:flex-row md:items-start gap-2 md:gap-6 pb-2">
       <div className="md:w-64 shrink-0">
         <p className="text-sm font-semibold text-slate-700">{label}</p>
-        {hint && <p className="text-xs text-slate-400 mt-0.5">{hint}</p>}
+        {hint && <p className="text-xs text-slate-400 mt-1 leading-relaxed">{hint}</p>}
       </div>
-      <div className="flex-1">{children}</div>
+      <div className="flex-1 w-full">{children}</div>
     </div>
   );
 }
+
+const inputClass =
+  "w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl bg-white text-slate-950 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 shadow-sm";
+
+const selectClass =
+  "w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl bg-white text-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 shadow-sm cursor-pointer";
 
 function TextInput({ value, onChange, placeholder, type = "text" }) {
   return (
@@ -88,7 +109,7 @@ function TextInput({ value, onChange, placeholder, type = "text" }) {
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+      className={inputClass}
     />
   );
 }
@@ -98,7 +119,7 @@ function SelectInput({ value, onChange, options }) {
     <select
       value={value}
       onChange={onChange}
-      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+      className={selectClass}
     >
       {options.map((o) => (
         <option key={o.value} value={o.value}>
@@ -120,17 +141,17 @@ function Toggle({ checked, onChange, label }) {
           onChange={onChange}
         />
         <div
-          className={`w-11 h-6 rounded-full transition-colors duration-200 ${
-            checked ? "bg-blue-600" : "bg-slate-200"
+          className={`w-11 h-6 rounded-full transition-colors duration-250 ${
+            checked ? "bg-indigo-600" : "bg-slate-200"
           }`}
         />
         <div
-          className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
+          className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-250 ${
             checked ? "translate-x-5" : "translate-x-0"
           }`}
         />
       </div>
-      <span className="text-sm text-slate-700">{label}</span>
+      <span className="text-sm font-medium text-slate-700">{label}</span>
     </label>
   );
 }
@@ -149,7 +170,7 @@ function Toast({ message, type, onClose }) {
           : "bg-red-500 text-white"
       }`}
     >
-      <span>{type === "success" ? "✓" : "✕"}</span>
+      {type === "success" ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
       {message}
     </div>
   );
@@ -157,19 +178,19 @@ function Toast({ message, type, onClose }) {
 
 /* ─────────────────────────────────────────
    Tab definitions
-───────────────────────────────────────── */
+ ───────────────────────────────────────── */
 const TABS = [
-  { id: "org", label: "Organisation", icon: "🏢" },
-  { id: "assets", label: "Asset Rules", icon: "📦" },
-  { id: "security", label: "Security", icon: "🔒" },
-  { id: "notifications", label: "Notifications", icon: "🔔" },
-  { id: "profile", label: "My Profile", icon: "👤" },
-  { id: "backup", label: "Backup & Reset", icon: "💾" },
+  { id: "org", label: "Organisation", icon: Building2 },
+  { id: "assets", label: "Asset Rules", icon: Sliders },
+  { id: "security", label: "Security", icon: Lock },
+  { id: "notifications", label: "Notifications", icon: Bell },
+  { id: "profile", label: "My Profile", icon: User },
+  { id: "backup", label: "Backup & Reset", icon: Database },
 ];
 
 /* ─────────────────────────────────────────
    Main Component
-───────────────────────────────────────── */
+ ───────────────────────────────────────── */
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("org");
   const [form, setForm] = useState(load);
@@ -232,40 +253,47 @@ export default function Settings() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-5xl mx-auto space-y-6 select-none animate-in fade-in duration-200">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-black text-slate-900">Settings</h1>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Settings</h1>
           <p className="text-slate-500 text-sm mt-1">
             Centralised configuration for your AMS
           </p>
         </div>
         <button
           onClick={handleSave}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-md shadow-blue-500/25 transition-colors"
+          className="flex items-center gap-2 bg-indigo-650 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-md shadow-indigo-500/10 transition-all cursor-pointer"
         >
-          <span>💾</span> Save Settings
+          <Save className="w-4 h-4" /> Save Settings
         </button>
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col md:flex-row gap-6">
         {/* Sidebar Tabs */}
-        <div className="w-48 shrink-0 space-y-1">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all text-left ${
-                activeTab === tab.id
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
-                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-800"
-              }`}
-            >
-              <span>{tab.icon}</span>
-              {tab.label}
-            </button>
-          ))}
+        <div className="md:w-56 shrink-0 flex flex-row md:flex-col gap-1 overflow-x-auto pb-2 md:pb-0">
+          {TABS.map((tab) => {
+            const TabIcon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all text-left whitespace-nowrap cursor-pointer ${
+                  isActive
+                    ? "bg-indigo-650 text-white shadow-md shadow-indigo-500/15"
+                    : "text-slate-500 hover:bg-slate-100 hover:text-slate-800 bg-transparent"
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <TabIcon className={`w-4 h-4 ${isActive ? "text-white" : "text-slate-400"}`} />
+                  <span>{tab.label}</span>
+                </div>
+                {isActive && <ChevronRight className="w-3.5 h-3.5 opacity-80 hidden md:block" />}
+              </button>
+            );
+          })}
         </div>
 
         {/* Tab Content */}
@@ -273,7 +301,7 @@ export default function Settings() {
 
           {/* ── Organisation ── */}
           {activeTab === "org" && (
-            <SectionCard title="Organisation Details" icon="🏢">
+            <SectionCard title="Organisation Details" icon={Building2}>
               <Field label="Organisation Name" hint="Displayed across the system">
                 <TextInput value={form.org_name} onChange={set("org_name")} placeholder="e.g. Acme Corp" />
               </Field>
@@ -289,7 +317,7 @@ export default function Settings() {
                   onChange={set("org_address")}
                   rows={3}
                   placeholder="Full office address…"
-                  className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 shadow-sm resize-none bg-white placeholder-slate-400"
                 />
               </Field>
               <Field label="Timezone">
@@ -325,7 +353,7 @@ export default function Settings() {
 
           {/* ── Asset Rules ── */}
           {activeTab === "assets" && (
-            <SectionCard title="Asset Management Rules" icon="📦">
+            <SectionCard title="Asset Management Rules" icon={Sliders}>
               <Field label="Asset Code Prefix" hint="Prepended to auto-generated asset codes">
                 <TextInput value={form.asset_code_prefix} onChange={set("asset_code_prefix")} placeholder="e.g. AST" />
               </Field>
@@ -354,7 +382,7 @@ export default function Settings() {
 
           {/* ── Security ── */}
           {activeTab === "security" && (
-            <SectionCard title="Security Policies" icon="🔒">
+            <SectionCard title="Security Policies" icon={Lock}>
               <Field label="Session Timeout (minutes)" hint="Automatically log out inactive users">
                 <TextInput type="number" value={form.session_timeout} onChange={set("session_timeout")} placeholder="30" />
               </Field>
@@ -375,28 +403,28 @@ export default function Settings() {
 
           {/* ── Notifications ── */}
           {activeTab === "notifications" && (
-            <SectionCard title="Notification Preferences" icon="🔔">
+            <SectionCard title="Notification Preferences" icon={Bell}>
               <Field label="Asset Assignment" hint="Notify when an asset is assigned or returned">
-                <Toggle checked={form.notify_assignment} onChange={set("notify_assignment")} label="Enable" />
+                <Toggle checked={form.notify_assignment} onChange={set("notify_assignment")} label="Enable Notifications" />
               </Field>
               <Field label="Maintenance Alerts" hint="Notify when maintenance is scheduled or overdue">
-                <Toggle checked={form.notify_maintenance} onChange={set("notify_maintenance")} label="Enable" />
+                <Toggle checked={form.notify_maintenance} onChange={set("notify_maintenance")} label="Enable Notifications" />
               </Field>
               <Field label="Warranty Expiry Alerts">
-                <Toggle checked={form.notify_warranty} onChange={set("notify_warranty")} label="Enable" />
+                <Toggle checked={form.notify_warranty} onChange={set("notify_warranty")} label="Enable Notifications" />
               </Field>
               <Field label="Warranty Alert Lead Time (days)" hint="How many days before expiry to send alerts">
                 <TextInput type="number" value={form.warranty_alert_days} onChange={set("warranty_alert_days")} placeholder="30" />
               </Field>
               <Field label="Low Stock Alerts" hint="Notify when available assets fall below threshold">
-                <Toggle checked={form.notify_low_stock} onChange={set("notify_low_stock")} label="Enable" />
+                <Toggle checked={form.notify_low_stock} onChange={set("notify_low_stock")} label="Enable Notifications" />
               </Field>
             </SectionCard>
           )}
 
           {/* ── Profile ── */}
           {activeTab === "profile" && (
-            <SectionCard title="Administrator Profile" icon="👤">
+            <SectionCard title="Administrator Profile" icon={User}>
               <Field label="Full Name">
                 <TextInput value={form.admin_name} onChange={set("admin_name")} placeholder="John Smith" />
               </Field>
@@ -406,8 +434,8 @@ export default function Settings() {
               <Field label="Phone">
                 <TextInput value={form.admin_phone} onChange={set("admin_phone")} placeholder="+91 98765 43210" />
               </Field>
-              <div className="pt-2 border-t border-slate-50">
-                <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-4">Change Password</p>
+              <div className="pt-4 border-t border-slate-100">
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-4">Change Password</p>
                 <div className="space-y-4">
                   <Field label="Current Password">
                     <TextInput type="password" value="" onChange={() => {}} placeholder="••••••••" />
@@ -419,7 +447,7 @@ export default function Settings() {
                     <TextInput type="password" value="" onChange={() => {}} placeholder="••••••••" />
                   </Field>
                 </div>
-                <p className="text-xs text-slate-400 mt-3">
+                <p className="text-xs text-slate-400 mt-4 leading-relaxed italic">
                   Password changes are handled by the authentication system and are not persisted here.
                 </p>
               </div>
@@ -429,36 +457,36 @@ export default function Settings() {
           {/* ── Backup & Reset ── */}
           {activeTab === "backup" && (
             <div className="space-y-6">
-              <SectionCard title="Export Settings" icon="📤">
+              <SectionCard title="Export Settings" icon={Download}>
                 <Field label="Download Configuration" hint="Save all current settings to a JSON file">
                   <button
                     onClick={handleExport}
-                    className="flex items-center gap-2 bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
+                    className="flex items-center gap-2 bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm"
                   >
-                    <span>⬇️</span> Export settings.json
+                    <Download className="w-3.5 h-3.5" /> Export settings.json
                   </button>
                 </Field>
               </SectionCard>
 
-              <SectionCard title="Import Settings" icon="📥">
+              <SectionCard title="Import Settings" icon={Upload}>
                 <Field label="Upload Configuration" hint="Restore settings from a previously exported JSON file">
-                  <label className="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 px-4 py-2 rounded-xl text-sm font-semibold cursor-pointer transition-colors w-fit">
-                    <span>📂</span> Choose File
+                  <label className="flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 px-4 py-2.5 rounded-xl text-xs font-bold cursor-pointer transition-all w-fit shadow-sm">
+                    <Upload className="w-3.5 h-3.5" /> Choose File
                     <input type="file" accept=".json" onChange={handleImport} className="hidden" />
                   </label>
                 </Field>
               </SectionCard>
 
-              <SectionCard title="Reset to Defaults" icon="🔄">
+              <SectionCard title="Reset to Defaults" icon={AlertTriangle}>
                 <Field
                   label="Factory Reset"
                   hint="Clears all saved settings and restores factory defaults. This action cannot be undone."
                 >
                   <button
                     onClick={handleReset}
-                    className="flex items-center gap-2 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
+                    className="flex items-center gap-2 bg-rose-50 hover:bg-rose-100 border border-rose-250 text-rose-600 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm"
                   >
-                    <span>⚠️</span> Reset All Settings
+                    <AlertTriangle className="w-3.5 h-3.5 text-rose-500" /> Reset All Settings
                   </button>
                 </Field>
               </SectionCard>
@@ -469,9 +497,9 @@ export default function Settings() {
           <div className="flex justify-end pt-2">
             <button
               onClick={handleSave}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-md shadow-blue-500/25 transition-colors"
+              className="flex items-center gap-2 bg-indigo-650 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md shadow-indigo-500/10 transition-all cursor-pointer"
             >
-              💾 Save Settings
+              <Save className="w-4 h-4" /> Save Settings
             </button>
           </div>
 

@@ -9,20 +9,23 @@ const REPORT_TYPES = [
 
 export default function ReportFilters({ reportType, setReportType }) {
   return (
-    <div className="flex flex-wrap gap-2 mb-6">
-      {REPORT_TYPES.map((type) => (
-        <button
-          key={type.value}
-          onClick={() => setReportType(type.value)}
-          className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
-            reportType === type.value
-              ? "bg-blue-600 text-white shadow-md shadow-blue-500/25"
-              : "bg-white text-slate-500 border border-slate-200 hover:border-blue-300 hover:text-blue-600"
-          }`}
-        >
-          {type.label}
-        </button>
-      ))}
+    <div className="flex flex-wrap gap-2 mb-6 select-none">
+      {REPORT_TYPES.map((type) => {
+        const isActive = reportType === type.value;
+        return (
+          <button
+            key={type.value}
+            onClick={() => setReportType(type.value)}
+            className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
+              isActive
+                ? "bg-indigo-650 text-white shadow-md shadow-indigo-500/15"
+                : "bg-white text-slate-500 border border-slate-200 hover:border-indigo-300 hover:text-indigo-600 shadow-sm"
+            }`}
+          >
+            {type.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
