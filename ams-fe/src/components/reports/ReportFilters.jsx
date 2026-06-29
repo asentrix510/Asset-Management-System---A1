@@ -18,7 +18,7 @@ export default function ReportFilters({ reportType, setReportType }) {
             onClick={() => setReportType(type.value)}
             className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
               isActive
-                ? "bg-indigo-650 text-white shadow-md shadow-indigo-500/15"
+                ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/15"
                 : "bg-white text-slate-500 border border-slate-200 hover:border-indigo-300 hover:text-indigo-600 shadow-sm"
             }`}
           >

@@ -25,6 +25,45 @@ router.get(
   getAuditLogs
 );
 
+// Public stats for login page (no auth required)
+router.get(
+  "/public-stats",
+  async (req, res) => {
+    try {
+      const db = require("../config/db");
+
+      const [totalAssets] = await db.query(
+        `SELECT COUNT(*) AS total FROM assets`
+      );
+      const [totalUsers] = await db.query(
+        `SELECT COUNT(*) AS total FROM users`
+      );
+      const [maintenance] = await db.query(
+        `SELECT COUNT(*) AS total FROM maintenance`
+      );
+      const [vendors] = await db.query(
+        `SELECT COUNT(*) AS total FROM vendors`
+      );
+
+      res.json({
+        success: true,
+        stats: {
+          totalAssets: totalAssets[0].total,
+          totalUsers: totalUsers[0].total,
+          maintenanceTickets: maintenance[0].total,
+          totalVendors: vendors[0].total,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        success: false,
+        message: "Server error",
+      });
+    }
+  }
+);
+
 router.get(
   "/stats",
   authMiddleware,
@@ -49,4 +88,4 @@ router.get(
   getRecentActivity
 );
 
-module.exports = router;
+module.exports = router;

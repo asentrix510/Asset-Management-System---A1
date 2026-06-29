@@ -373,10 +373,10 @@ export default function Reports() {
         <button
           onClick={handleExportCSV}
           disabled={filteredData.length === 0}
-          className="self-start md:self-auto px-5 py-2.5 bg-indigo-650 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-md shadow-indigo-500/10 cursor-pointer disabled:cursor-not-allowed"
+          className="self-start md:self-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-sm font-bold flex items-center gap-2.5 transition-all duration-200 shadow-lg shadow-indigo-500/20 cursor-pointer disabled:cursor-not-allowed hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5"
         >
-          <FileSpreadsheet className="w-4 h-4" />
-          Export CSV
+          <Download className="w-4.5 h-4.5" />
+          Download CSV
         </button>
       </div>
 
