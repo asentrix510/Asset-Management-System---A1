@@ -31,6 +31,12 @@ router.get(
 );
 
 router.get(
+  "/depreciation",
+  authorize("Admin"),
+  getAllDepreciation
+);
+
+router.get(
   "/:id",
   authorize("Admin"),
   getAssetById
@@ -52,12 +58,6 @@ router.delete(
   "/:id",
   authorize("Admin"),
   deleteAsset
-);
-
-router.get(
-  "/depreciation",
-  authorize("Admin"),
-  getAllDepreciation
 );
 
 router.get(

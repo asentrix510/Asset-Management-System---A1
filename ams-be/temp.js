@@ -1,4 +1,3 @@
 const bcrypt = require("bcryptjs");
-
-bcrypt.hash("Admin@123", 10)
-.then(console.log);
+bcrypt.compare("admin123", "$2b$10$SLpPBSJ8EqrMW123JQ7OyupfsYMOWFIVj2Pu3dFJXEUF4ZTSnTfhi")
+  .then(res => console.log("Comparison result:", res));

@@ -69,6 +69,8 @@ const login = async (req, res) => {
         email: user.email,
         role: user.role,
         department: user.department,
+        designation: user.designation,
+        phone: user.phone,
       },
     });
   } catch (error) {
@@ -84,7 +86,7 @@ const login = async (req, res) => {
 const getCurrentUser = async (req, res) => {
   try {
     const [users] = await db.query(
-      "SELECT user_id,name,email,role,department FROM users WHERE user_id = ?",
+      "SELECT user_id,name,email,role,department,designation,phone FROM users WHERE user_id = ?",
       [req.user.userId]
     );
 
