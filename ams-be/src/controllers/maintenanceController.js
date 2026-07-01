@@ -87,6 +87,14 @@ exports.createMaintenance =
         remarks,
       } = req.body;
 
+      if (cost != null && Number(cost) < 0) {
+        return res.status(400).json({ success: false, message: "Maintenance cost cannot be negative" });
+      }
+
+      if (maintenance_date && new Date(maintenance_date) > new Date()) {
+        return res.status(400).json({ success: false, message: "Maintenance date cannot be in the future" });
+      }
+
       const [result] =
         await db.query(
           `
@@ -174,6 +182,14 @@ exports.updateMaintenance =
         status,
         remarks,
       } = req.body;
+
+      if (cost != null && Number(cost) < 0) {
+        return res.status(400).json({ success: false, message: "Maintenance cost cannot be negative" });
+      }
+
+      if (maintenance_date && new Date(maintenance_date) > new Date()) {
+        return res.status(400).json({ success: false, message: "Maintenance date cannot be in the future" });
+      }
 
       await db.query(
         `

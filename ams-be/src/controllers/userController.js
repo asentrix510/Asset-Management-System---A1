@@ -132,6 +132,13 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
+    if (String(req.user.userId) === String(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot delete your own account while logged in",
+      });
+    }
+
     await User.delete(req.params.id);
 
     await logAudit({

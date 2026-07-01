@@ -13,6 +13,7 @@ export default function MaintenanceForm({
   initialData,
   isEditing,
 }) {
+  const today = new Date().toISOString().split("T")[0];
   const [formData, setFormData] = useState({
     asset_id: "",
     issue_description: "",
@@ -36,10 +37,16 @@ export default function MaintenanceForm({
   }, [initialData]);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "cost" && value !== "" && Number(value) < 0) return;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+  };
+
+  const blockInvalidCostKeys = (e) => {
+    if (["e", "E", "-", "+"].includes(e.key)) e.preventDefault();
   };
 
   const handleSubmit = async (e) => {
@@ -97,6 +104,7 @@ export default function MaintenanceForm({
             type="date"
             name="maintenance_date"
             value={formData.maintenance_date}
+            max={today}
             onChange={handleChange}
             className={inputClass}
             required
@@ -126,8 +134,11 @@ export default function MaintenanceForm({
             type="number"
             name="cost"
             placeholder="e.g. 2500"
+            min="0"
+            step="0.01"
             value={formData.cost}
             onChange={handleChange}
+            onKeyDown={blockInvalidCostKeys}
             className={inputClass}
           />
         </div>

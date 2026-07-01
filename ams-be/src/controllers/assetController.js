@@ -48,6 +48,12 @@ const getAssetById = async (req, res) => {
 
 const createAsset = async (req, res) => {
   try {
+    if (req.body.purchase_cost != null && Number(req.body.purchase_cost) < 0) {
+      return res.status(400).json({ success: false, message: "Purchase cost cannot be negative" });
+    }
+    if (req.body.purchase_date && new Date(req.body.purchase_date) > new Date()) {
+      return res.status(400).json({ success: false, message: "Purchase date cannot be in the future" });
+    }
     await Asset.create(req.body);
 
     await logAudit({
@@ -74,6 +80,12 @@ const createAsset = async (req, res) => {
 
 const updateAsset = async (req, res) => {
   try {
+    if (req.body.purchase_cost != null && Number(req.body.purchase_cost) < 0) {
+      return res.status(400).json({ success: false, message: "Purchase cost cannot be negative" });
+    }
+    if (req.body.purchase_date && new Date(req.body.purchase_date) > new Date()) {
+      return res.status(400).json({ success: false, message: "Purchase date cannot be in the future" });
+    }
     await Asset.update(
       req.params.id,
       req.body

@@ -27,6 +27,11 @@ const getAssignments =
 const assignAsset =
   async (req, res) => {
     try {
+      const { assigned_date } = req.body;
+      if (assigned_date && new Date(assigned_date) > new Date()) {
+        return res.status(400).json({ success: false, message: "Assignment date cannot be in the future" });
+      }
+
       await AssetAssignment.create(
         req.body
       );

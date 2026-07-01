@@ -100,6 +100,7 @@ export default function Assets() {
                 onSubmit={handleSubmit}
                 initialData={editingAsset}
                 isEditing={!!editingAsset}
+                existingAssets={assets}
             />
 
             <div className="flex gap-4 mb-4">

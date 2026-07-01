@@ -8,10 +8,12 @@ const selectClass =
   "w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl bg-white text-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 shadow-sm cursor-pointer";
 
 export default function AssignmentForm({ users, assets, onSubmit }) {
+  const today = new Date().toISOString().split("T")[0];
+
   const [formData, setFormData] = useState({
     asset_id: "",
     user_id: "",
-    assigned_date: new Date().toISOString().split("T")[0],
+    assigned_date: today,
   });
 
   const handleChange = (e) => {
@@ -27,7 +29,7 @@ export default function AssignmentForm({ users, assets, onSubmit }) {
     setFormData({
       asset_id: "",
       user_id: "",
-      assigned_date: new Date().toISOString().split("T")[0],
+      assigned_date: today,
     });
   };
 
@@ -90,6 +92,7 @@ export default function AssignmentForm({ users, assets, onSubmit }) {
             type="date"
             name="assigned_date"
             value={formData.assigned_date}
+            max={today}
             onChange={handleChange}
             className={inputClass}
             required
