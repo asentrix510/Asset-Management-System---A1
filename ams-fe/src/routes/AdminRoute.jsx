@@ -22,11 +22,11 @@ export default function AdminRoute({
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/" />;
+    return <Navigate to="/" replace />;
   }
 
   if (user?.role !== "Admin") {
-    return <Navigate to="/" />;
+    return <Navigate to="/" replace />;
   }
 
   return children;

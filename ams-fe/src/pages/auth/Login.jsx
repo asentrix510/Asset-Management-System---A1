@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
   Eye, EyeOff, Shield, User, AlertCircle, Loader2, Lock, Mail,
@@ -8,7 +8,7 @@ import {
 import api from "../../api/axios";
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, isAuthenticated, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   const [tab, setTab] = useState("admin"); // "admin" | "user"
@@ -31,12 +31,17 @@ export default function Login() {
           setStats(response.data.stats);
         }
       } catch (err) {
-        // Silently fail — stats are non-critical on login page
         console.error("Failed to fetch login stats:", err);
       }
     };
     fetchStats();
   }, []);
+
+  // If already authenticated, redirect away from login immediately
+  if (!authLoading && isAuthenticated && user) {
+    const dest = user.role === "Admin" ? "/dashboard" : "/user/dashboard";
+    return <Navigate to={dest} replace />;
+  }
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -60,13 +65,13 @@ export default function Login() {
           setError("Access denied. Please use the Employee Login.");
           return;
         }
-        navigate("/dashboard");
+        navigate("/dashboard", { replace: true });
       } else {
         if (role !== "User") {
           setError("Access denied. Please use the Admin Login.");
           return;
         }
-        navigate("/user/dashboard");
+        navigate("/user/dashboard", { replace: true });
       }
     } catch (err) {
       setError(err?.response?.data?.message || "Invalid email or password");

@@ -15,8 +15,8 @@ export default function UserRoute({ children }) {
     );
   }
 
-  if (!isAuthenticated) return <Navigate to="/" />;
-  if (user?.role !== "User") return <Navigate to="/" />;
+  if (!isAuthenticated) return <Navigate to="/" replace />;
+  if (user?.role !== "User") return <Navigate to="/" replace />;
 
   return children;
 }
