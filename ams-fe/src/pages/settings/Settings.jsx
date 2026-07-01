@@ -40,7 +40,6 @@ const DEFAULTS = {
   session_timeout: "30",
   max_login_attempts: "5",
   password_min_length: "8",
-  require_2fa: false,
   allow_remember_me: true,
 
   // Notifications
@@ -391,9 +390,6 @@ export default function Settings() {
               </Field>
               <Field label="Minimum Password Length">
                 <TextInput type="number" value={form.password_min_length} onChange={set("password_min_length")} placeholder="8" />
-              </Field>
-              <Field label="Two-Factor Authentication" hint="Require 2FA for all admin logins">
-                <Toggle checked={form.require_2fa} onChange={set("require_2fa")} label="Enable 2FA" />
               </Field>
               <Field label="Remember Me" hint="Allow users to stay logged in across sessions">
                 <Toggle checked={form.allow_remember_me} onChange={set("allow_remember_me")} label="Allow Remember Me" />

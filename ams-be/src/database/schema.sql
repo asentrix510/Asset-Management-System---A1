@@ -92,6 +92,8 @@ CREATE TABLE IF NOT EXISTS `maintenance` (
   `asset_id`          char(36)      NOT NULL,
   `issue_description` text          NOT NULL,
   `maintenance_date`  date          NOT NULL,
+  `handover_date`     date          DEFAULT NULL,
+  `return_date`       date          DEFAULT NULL,
   `cost`              decimal(10,2) DEFAULT '0.00',
   `status`            enum('Open','In Progress','Completed') DEFAULT 'Open',
   `remarks`           text,

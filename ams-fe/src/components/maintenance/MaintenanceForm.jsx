@@ -18,6 +18,8 @@ export default function MaintenanceForm({
     asset_id: "",
     issue_description: "",
     maintenance_date: "",
+    handover_date: "",
+    return_date: "",
     cost: "",
     status: "Open",
     remarks: "",
@@ -29,6 +31,8 @@ export default function MaintenanceForm({
         asset_id: initialData.asset_id || "",
         issue_description: initialData.issue_description || "",
         maintenance_date: initialData.maintenance_date?.split("T")[0] || "",
+        handover_date: initialData.handover_date?.split("T")[0] || "",
+        return_date: initialData.return_date?.split("T")[0] || "",
         cost: initialData.cost || "",
         status: initialData.status || "Open",
         remarks: initialData.remarks || "",
@@ -58,6 +62,8 @@ export default function MaintenanceForm({
         asset_id: "",
         issue_description: "",
         maintenance_date: "",
+        handover_date: "",
+        return_date: "",
         cost: "",
         status: "Open",
         remarks: "",
@@ -108,6 +114,32 @@ export default function MaintenanceForm({
             onChange={handleChange}
             className={inputClass}
             required
+          />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-slate-500">
+            Handover Date
+          </label>
+          <input
+            type="date"
+            name="handover_date"
+            value={formData.handover_date}
+            onChange={handleChange}
+            className={inputClass}
+          />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-slate-500">
+            Return Date
+          </label>
+          <input
+            type="date"
+            name="return_date"
+            value={formData.return_date}
+            onChange={handleChange}
+            className={inputClass}
           />
         </div>
 

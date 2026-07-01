@@ -90,6 +90,8 @@ exports.getMyMaintenance = async (req, res) => {
          m.maintenance_id,
          m.issue_description,
          m.maintenance_date,
+         m.handover_date,
+         m.return_date,
          m.cost,
          m.status,
          m.remarks,

@@ -82,6 +82,8 @@ exports.createMaintenance =
         asset_id,
         issue_description,
         maintenance_date,
+        handover_date,
+        return_date,
         cost,
         status,
         remarks,
@@ -102,16 +104,20 @@ exports.createMaintenance =
             asset_id,
             issue_description,
             maintenance_date,
+            handover_date,
+            return_date,
             cost,
             status,
             remarks
           )
-          VALUES (?, ?, ?, ?, ?, ?)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
           `,
           [
             asset_id,
             issue_description,
             maintenance_date,
+            handover_date || null,
+            return_date || null,
             cost,
             status,
             remarks,
@@ -178,6 +184,8 @@ exports.updateMaintenance =
         asset_id,
         issue_description,
         maintenance_date,
+        handover_date,
+        return_date,
         cost,
         status,
         remarks,
@@ -198,6 +206,8 @@ exports.updateMaintenance =
           asset_id = ?,
           issue_description = ?,
           maintenance_date = ?,
+          handover_date = ?,
+          return_date = ?,
           cost = ?,
           status = ?,
           remarks = ?
@@ -207,6 +217,8 @@ exports.updateMaintenance =
           asset_id,
           issue_description,
           maintenance_date,
+          handover_date || null,
+          return_date || null,
           cost,
           status,
           remarks,

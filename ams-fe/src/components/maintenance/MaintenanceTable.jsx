@@ -65,6 +65,8 @@ export default function MaintenanceTable({ records, onEdit, onDelete }) {
               <th className="px-6 py-4">Asset Details</th>
               <th className="px-6 py-4 w-1/3">Issue Description</th>
               <th className="px-6 py-4">Reported Date</th>
+              <th className="px-6 py-4">Handover Date</th>
+              <th className="px-6 py-4">Return Date</th>
               <th className="px-6 py-4">Service Cost</th>
               <th className="px-6 py-4">Status</th>
               <th className="px-6 py-4">Remarks</th>
@@ -96,6 +98,14 @@ export default function MaintenanceTable({ records, onEdit, onDelete }) {
 
                 <td className="px-6 py-4 text-slate-500 font-semibold">
                   {formatDate(record.maintenance_date)}
+                </td>
+
+                <td className="px-6 py-4 text-slate-500 font-semibold">
+                  {formatDate(record.handover_date)}
+                </td>
+
+                <td className="px-6 py-4 text-slate-500 font-semibold">
+                  {formatDate(record.return_date)}
                 </td>
 
                 <td className="px-6 py-4 font-bold text-slate-700">
