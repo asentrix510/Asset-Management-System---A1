@@ -26,6 +26,29 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function AssetCategoryChart({ data }) {
+  const counts = data?.map(d => d.count) || [];
+  const maxCount = counts.length > 0 ? Math.max(...counts) : 0;
+  const yAxisMax = maxCount > 0 ? Math.ceil(maxCount * 1.2) : 5;
+
+  const CustomCursor = (props) => {
+    const { x, y, width, height, payload } = props;
+    if (!payload || payload.length === 0) return null;
+
+    const value = payload[0].value;
+    const barHeight = (value / yAxisMax) * height;
+    const barY = y + height - barHeight;
+
+    return (
+      <rect
+        x={x}
+        y={barY}
+        width={width}
+        height={barHeight}
+        fill="#f8fafc"
+      />
+    );
+  };
+
   return (
     <div className="h-72">
       <ResponsiveContainer width="100%" height="100%">
@@ -42,6 +65,7 @@ export default function AssetCategoryChart({ data }) {
             tickLine={false}
           />
           <YAxis
+            domain={[0, yAxisMax]}
             allowDecimals={false}
             tickFormatter={(v) => Math.floor(v)}
             tick={{ fontSize: 11, fill: "#94a3b8", fontWeight: 500 }}
@@ -49,7 +73,7 @@ export default function AssetCategoryChart({ data }) {
             tickLine={false}
             width={30}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: "#f8fafc" }} />
+          <Tooltip content={<CustomTooltip />} cursor={<CustomCursor />} />
           <Bar
             dataKey="count"
             radius={[6, 6, 0, 0]}

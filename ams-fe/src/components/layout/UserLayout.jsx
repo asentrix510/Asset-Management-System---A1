@@ -37,7 +37,7 @@ function Sidebar() {
   };
 
   return (
-    <aside className="w-64 shrink-0 bg-slate-950 text-slate-100 min-h-screen flex flex-col border-r border-slate-900">
+    <aside className="w-64 shrink-0 bg-slate-950 text-slate-100 h-screen flex flex-col border-r border-slate-900">
       {/* Brand Header */}
       <div className="px-6 py-5 border-b border-slate-900">
         <div className="flex items-center gap-3">
@@ -112,9 +112,9 @@ export default function UserLayout({ children }) {
   const { user } = useAuth();
 
   return (
-    <div className="flex min-h-screen bg-slate-50/50">
+    <div className="flex h-screen overflow-hidden bg-slate-50/50">
       <Sidebar />
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 h-full">
         {/* Header bar */}
         <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-8 shrink-0 shadow-sm shadow-slate-100/40">
           <p className="text-sm text-slate-500 font-medium">
@@ -127,7 +127,7 @@ export default function UserLayout({ children }) {
         </header>
         
         {/* Main Content Area */}
-        <main className="flex-1 p-8 overflow-auto">
+        <main className="flex-1 p-8 overflow-y-auto">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>

@@ -68,7 +68,7 @@ export default function Sidebar() {
     <aside
       className={`${
         collapsed ? "w-16" : "w-64"
-      } bg-slate-950 text-slate-100 min-h-screen flex flex-col transition-all duration-300 shrink-0 border-r border-slate-900`}
+      } bg-slate-950 text-slate-100 h-screen flex flex-col transition-all duration-300 shrink-0 border-r border-slate-900`}
     >
       {/* Brand Header */}
       <div className="flex items-center justify-between p-4 border-b border-slate-900">
