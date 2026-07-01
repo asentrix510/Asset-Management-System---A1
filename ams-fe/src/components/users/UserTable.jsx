@@ -1,6 +1,6 @@
 import { Edit2, Trash2 } from "lucide-react";
 
-export default function UserTable({ users, onDelete, onViewDetails, onEdit }) {
+export default function UserTable({ users, onDelete, onViewDetails, onEdit, currentUserRole }) {
   const getInitials = (name) => {
     if (!name) return "U";
     return name
@@ -69,7 +69,9 @@ export default function UserTable({ users, onDelete, onViewDetails, onEdit }) {
                 <td className="px-6 py-4">
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border ${
-                      user.role === "Admin"
+                      user.role === "SuperAdmin"
+                        ? "bg-amber-50 text-amber-700 border-amber-200"
+                        : user.role === "Admin"
                         ? "bg-indigo-50 text-indigo-700 border-indigo-100"
                         : "bg-slate-50 text-slate-600 border-slate-100"
                     }`}
@@ -79,6 +81,7 @@ export default function UserTable({ users, onDelete, onViewDetails, onEdit }) {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center justify-center gap-2">
+                    {(user.role === "User" || currentUserRole === "SuperAdmin") && (
                     <button
                       onClick={() => onEdit && onEdit(user)}
                       className="p-1.5 bg-slate-50 text-slate-555 hover:text-indigo-650 hover:bg-indigo-50 rounded-lg border border-slate-100 hover:border-indigo-100 transition-colors cursor-pointer"
@@ -86,6 +89,9 @@ export default function UserTable({ users, onDelete, onViewDetails, onEdit }) {
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
+                    )}
+                    {/* Show delete only if: target is not SuperAdmin AND (target is User OR current user is SuperAdmin) */}
+                    {user.role !== "SuperAdmin" && (user.role === "User" || currentUserRole === "SuperAdmin") && (
                     <button
                       onClick={() => onDelete(user.user_id)}
                       className="p-1.5 bg-slate-50 text-slate-555 hover:text-rose-650 hover:bg-rose-50 rounded-lg border border-slate-100 hover:border-rose-100 transition-colors cursor-pointer"
@@ -93,6 +99,7 @@ export default function UserTable({ users, onDelete, onViewDetails, onEdit }) {
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
+                    )}
                   </div>
                 </td>
               </tr>

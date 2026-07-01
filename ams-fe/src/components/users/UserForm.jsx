@@ -7,7 +7,7 @@ const inputClass =
 const selectClass =
   "w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl bg-white text-slate-950 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200 shadow-sm cursor-pointer";
 
-export default function UserForm({ onSubmit, onCancel, loading = false, initialData = null }) {
+export default function UserForm({ onSubmit, onCancel, loading = false, initialData = null, currentUserRole }) {
   const [form, setForm] = useState({
     name: initialData?.name || "",
     department: initialData?.department || "",
@@ -132,15 +132,27 @@ export default function UserForm({ onSubmit, onCancel, loading = false, initialD
               <Shield className="w-3.5 h-3.5 text-slate-400" />
               System Role
             </label>
-            <select
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-              className={selectClass}
-            >
-              <option value="User">User (Standard Access)</option>
-              <option value="Admin">Admin (Full System Console)</option>
-            </select>
+            {currentUserRole === "SuperAdmin" ? (
+              <select
+                name="role"
+                value={form.role}
+                onChange={handleChange}
+                className={selectClass}
+              >
+                <option value="User">User (Standard Access)</option>
+                <option value="Admin">Admin (Full System Console)</option>
+                <option value="SuperAdmin">SuperAdmin (Highest Privilege)</option>
+              </select>
+            ) : (
+              <input
+                type="text"
+                name="role"
+                value={form.role}
+                readOnly
+                disabled
+                className="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl bg-slate-50 text-slate-450 cursor-not-allowed"
+              />
+            )}
           </div>
         </div>
 

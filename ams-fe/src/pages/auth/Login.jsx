@@ -39,7 +39,7 @@ export default function Login() {
 
   // If already authenticated, redirect away from login immediately
   if (!authLoading && isAuthenticated && user) {
-    const dest = user.role === "Admin" ? "/dashboard" : "/user/dashboard";
+    const dest = (user.role === "Admin" || user.role === "SuperAdmin") ? "/dashboard" : "/user/dashboard";
     return <Navigate to={dest} replace />;
   }
 
@@ -61,7 +61,7 @@ export default function Login() {
       const data = await login(formData.email, formData.password);
       const role = data?.user?.role;
       if (tab === "admin") {
-        if (role !== "Admin") {
+        if (role !== "Admin" && role !== "SuperAdmin") {
           setError("Access denied. Please use the Employee Login.");
           return;
         }

@@ -6,7 +6,7 @@ import { getUsers, createUser, deleteUser, updateUser } from "../../api/userApi"
 import { FaUserPlus } from "react-icons/fa";
 
 export default function Users() {
-  const { token } = useAuth();
+  const { token, user: currentUser } = useAuth();
   const [users, setUsers] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -97,6 +97,7 @@ export default function Users() {
             onSubmit={handleCreate}
             onCancel={() => setShowForm(false)}
             loading={loading}
+            currentUserRole={currentUser?.role}
           />
         </div>
       )}
@@ -109,6 +110,7 @@ export default function Users() {
             onCancel={() => setEditingUser(null)}
             loading={loading}
             initialData={editingUser}
+            currentUserRole={currentUser?.role}
           />
         </div>
       )}
@@ -117,6 +119,7 @@ export default function Users() {
         users={users}
         onDelete={handleDelete}
         onViewDetails={setSelectedUser}
+        currentUserRole={currentUser?.role}
         onEdit={(user) => {
           setShowForm(false);
           setEditingUser(user);

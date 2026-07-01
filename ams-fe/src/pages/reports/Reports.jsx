@@ -147,6 +147,7 @@ export default function Reports() {
   const [error, setError] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchReport = async () => {
     setLoading(true);
@@ -203,13 +204,72 @@ export default function Reports() {
   useEffect(() => {
     setStartDate("");
     setEndDate("");
+    setSearchQuery("");
     fetchReport();
   }, [reportType]);
 
   const columns = COLUMNS[reportType] || [];
 
+  const getDateFieldName = (type) => {
+    switch (type) {
+      case "assets":
+      case "depreciation":
+        return "Purchase Date";
+      case "assignments":
+        return "Assigned Date";
+      case "maintenance":
+        return "Maintenance Date";
+      case "audit":
+        return "Timestamp";
+      default:
+        return "Date";
+    }
+  };
+
+  const handlePreset = (presetVal) => {
+    const end = new Date();
+    let start = new Date();
+
+    switch (presetVal) {
+      case "today":
+        break;
+      case "yesterday":
+        start.setDate(start.getDate() - 1);
+        end.setDate(end.getDate() - 1);
+        break;
+      case "7days":
+        start.setDate(start.getDate() - 7);
+        break;
+      case "30days":
+        start.setDate(start.getDate() - 30);
+        break;
+      case "thisMonth":
+        start = new Date(start.getFullYear(), start.getMonth(), 1);
+        break;
+      case "thisYear":
+        start = new Date(start.getFullYear(), 0, 1);
+        break;
+      default:
+        return;
+    }
+
+    setStartDate(start.toISOString().split("T")[0]);
+    setEndDate(end.toISOString().split("T")[0]);
+  };
+
   // Filter logic on the client side
   const filteredData = data.filter((row) => {
+    // 1. Text Search Filter
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const matchesSearch = columns.some((col) => {
+        const val = row[col];
+        return val && String(val).toLowerCase().includes(q);
+      });
+      if (!matchesSearch) return false;
+    }
+
+    // 2. Date Range Filter
     let rowDate = null;
     if (reportType === "assets" || reportType === "depreciation") {
       rowDate = row.purchase_date;
@@ -221,7 +281,7 @@ export default function Reports() {
       rowDate = row.created_at;
     }
 
-    // If report type is vendors or row has no date
+    // If report type is vendors or row has no date, date filters don't filter it out unless specifically selected
     if (!rowDate) {
       if (startDate || endDate) return false;
       return true;
@@ -306,7 +366,7 @@ export default function Reports() {
           <span className="bg-slate-50 border border-slate-200/80 text-slate-500 px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm">
             Total: {data.length}
           </span>
-          {(startDate || endDate) && (
+          {(startDate || endDate || searchQuery) && (
             <span className="bg-indigo-50 border border-indigo-150 text-indigo-700 px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm animate-pulse">
               Filtered: {filteredData.length}
             </span>
@@ -317,67 +377,131 @@ export default function Reports() {
       {/* Report Switcher Tabs */}
       <ReportFilters reportType={reportType} setReportType={setReportType} />
 
-      {/* Date Filter & Export Panel */}
-      <div className="bg-white rounded-2xl p-5 border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
-        <div className="flex flex-wrap items-center gap-4">
-          {reportType !== "vendors" ? (
-            <>
-              <div className="flex flex-col gap-1.5">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5 text-indigo-500" /> Start Date
-                </span>
+      {/* Date Filter, Search & Export Panel */}
+      <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-6">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+          
+          {/* Left: Filters */}
+          <div className="flex flex-wrap items-end gap-5 flex-1">
+            {reportType !== "vendors" ? (
+              <>
+                {/* Start Date */}
+                <div className="flex flex-col gap-1.5 min-w-[150px]">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-indigo-500" />
+                    Start {getDateFieldName(reportType)}
+                  </label>
+                  <input
+                    type="date"
+                    value={startDate}
+                    max={endDate || undefined}
+                    onChange={(e) => {
+                      setStartDate(e.target.value);
+                      if (endDate && e.target.value > endDate) setEndDate("");
+                    }}
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+                  />
+                </div>
+
+                {/* End Date */}
+                <div className="flex flex-col gap-1.5 min-w-[150px]">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-indigo-500" />
+                    End {getDateFieldName(reportType)}
+                  </label>
+                  <input
+                    type="date"
+                    value={endDate}
+                    min={startDate || undefined}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+                  />
+                </div>
+
+                {/* Search Bar */}
+                <div className="flex flex-col gap-1.5 flex-1 min-w-[200px]">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <Filter className="w-3.5 h-3.5 text-indigo-500" />
+                    Search Results
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Search by keywords, code, category..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+                  />
+                </div>
+              </>
+            ) : (
+              /* Vendors Search Bar Only */
+              <div className="flex flex-col gap-1.5 flex-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                  <Filter className="w-3.5 h-3.5 text-indigo-500" />
+                  Search Vendor List
+                </label>
                 <input
-                  type="date"
-                  value={startDate}
-                  max={endDate || undefined}
-                  onChange={(e) => {
-                    setStartDate(e.target.value);
-                    // clear end date if it's now before the new start
-                    if (endDate && e.target.value > endDate) setEndDate("");
-                  }}
-                  className="px-4 py-2 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-550 transition-all shadow-sm"
+                  type="text"
+                  placeholder="Search by name, representative, email..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full max-w-md px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
                 />
               </div>
-              <div className="flex flex-col gap-1.5">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5 text-indigo-550" /> End Date
-                </span>
-                <input
-                  type="date"
-                  value={endDate}
-                  min={startDate || undefined}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="px-4 py-2 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-550 transition-all shadow-sm"
-                />
-              </div>
-              {(startDate || endDate) && (
-                <button
-                  onClick={() => {
-                    setStartDate("");
-                    setEndDate("");
-                  }}
-                  className="self-end px-3 py-2 text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl border border-rose-100 hover:border-rose-200 transition-colors cursor-pointer"
-                >
-                  Clear Filters
-                </button>
-              )}
-            </>
-          ) : (
-            <span className="text-xs font-semibold text-slate-400 italic flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-indigo-500" />
-              Date filtering is not applicable for vendor list.
-            </span>
-          )}
+            )}
+          </div>
+
+          {/* Right: Export Button */}
+          <div className="self-stretch lg:self-auto flex items-end">
+            <button
+              onClick={handleExportCSV}
+              disabled={filteredData.length === 0}
+              className="w-full lg:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2.5 transition-all duration-200 shadow-md shadow-indigo-500/10 cursor-pointer disabled:cursor-not-allowed hover:shadow-lg hover:shadow-indigo-500/20 hover:-translate-y-0.5"
+            >
+              <Download className="w-4 h-4" />
+              Download CSV Report
+            </button>
+          </div>
         </div>
 
-        <button
-          onClick={handleExportCSV}
-          disabled={filteredData.length === 0}
-          className="self-start md:self-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-sm font-bold flex items-center gap-2.5 transition-all duration-200 shadow-lg shadow-indigo-500/20 cursor-pointer disabled:cursor-not-allowed hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5"
-        >
-          <Download className="w-4.5 h-4.5" />
-          Download CSV
-        </button>
+        {/* Date presets & active filters info */}
+        {reportType !== "vendors" && (
+          <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-2xs font-extrabold text-slate-450 uppercase tracking-wider mr-1">Quick Presets:</span>
+              {[
+                { label: "Today", value: "today" },
+                { label: "Yesterday", value: "yesterday" },
+                { label: "Last 7 Days", value: "7days" },
+                { label: "Last 30 Days", value: "30days" },
+                { label: "This Month", value: "thisMonth" },
+                { label: "This Year", value: "thisYear" },
+              ].map((p) => (
+                <button
+                  key={p.value}
+                  type="button"
+                  onClick={() => handlePreset(p.value)}
+                  className="px-2.5 py-1 bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 text-slate-500 hover:text-indigo-600 rounded-lg text-2xs font-bold transition-all cursor-pointer"
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+
+            {(startDate || endDate || searchQuery) && (
+              <button
+                onClick={() => {
+                  setStartDate("");
+                  setEndDate("");
+                  setSearchQuery("");
+                }}
+                className="text-2xs font-bold text-rose-600 hover:text-rose-800 bg-rose-50 border border-rose-100 hover:border-rose-200 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+              >
+                Reset All Filters
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Table */}
@@ -423,7 +547,8 @@ export default function Reports() {
               </tbody>
             </table>
           </div>
-        )}
+        )
+      }
       </div>
     </div>
   );

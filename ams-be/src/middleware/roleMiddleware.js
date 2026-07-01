@@ -7,7 +7,12 @@ const authorize = (...roles) => {
       });
     }
 
-    if (!roles.includes(req.user.role)) {
+    // SuperAdmin inherits all Admin-level access automatically
+    const effectiveRoles = roles.includes("Admin")
+      ? [...roles, "SuperAdmin"]
+      : roles;
+
+    if (!effectiveRoles.includes(req.user.role)) {
       return res.status(403).json({
         success: false,
         message: "Access denied",

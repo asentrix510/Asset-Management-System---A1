@@ -25,7 +25,7 @@ export default function AdminRoute({
     return <Navigate to="/" replace />;
   }
 
-  if (user?.role !== "Admin") {
+  if (user?.role !== "Admin" && user?.role !== "SuperAdmin") {
     return <Navigate to="/" replace />;
   }
 
