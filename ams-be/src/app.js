@@ -33,11 +33,18 @@ const reportRoutes =
   );
 const userPortalRoutes = require("./routes/userPortalRoutes");
 const path = require("path");
+const fs = require("fs");
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
+// Ensure uploads folder exists
+const uploadDir = path.join(__dirname, "../uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+app.use("/uploads", express.static(uploadDir));
 
 app.use("/api/test-db", testRoute);
 app.use("/api/auth", authRoutes);
