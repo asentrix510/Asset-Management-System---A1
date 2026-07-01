@@ -40,11 +40,13 @@ const Asset = {
         vendor_name,
         status,
         warranty_expiry,
-        description
+        description,
+        image_path,
+        invoice_path
       )
       VALUES (
         UUID(),
-        ?,?,?,?,?,?,?,?,?,?,?,?
+        ?,?,?,?,?,?,?,?,?,?,?,?,?,?
       )
       `,
       [
@@ -60,6 +62,8 @@ const Asset = {
         data.status,
         data.warranty_expiry,
         data.description,
+        data.image_path || null,
+        data.invoice_path || null,
       ]
     );
 
@@ -82,7 +86,9 @@ const Asset = {
         vendor_name=?,
         status=?,
         warranty_expiry=?,
-        description=?
+        description=?,
+        image_path=?,
+        invoice_path=?
       WHERE asset_id=?
       `,
       [
@@ -98,6 +104,8 @@ const Asset = {
         data.status,
         data.warranty_expiry,
         data.description,
+        data.image_path !== undefined ? data.image_path : null,
+        data.invoice_path !== undefined ? data.invoice_path : null,
         id,
       ]
     );

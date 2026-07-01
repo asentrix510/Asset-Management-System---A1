@@ -54,7 +54,18 @@ const createAsset = async (req, res) => {
     if (req.body.purchase_date && new Date(req.body.purchase_date) > new Date()) {
       return res.status(400).json({ success: false, message: "Purchase date cannot be in the future" });
     }
-    await Asset.create(req.body);
+
+    const assetData = { ...req.body };
+    if (req.files) {
+      if (req.files.image && req.files.image[0]) {
+        assetData.image_path = "uploads/" + req.files.image[0].filename;
+      }
+      if (req.files.invoice && req.files.invoice[0]) {
+        assetData.invoice_path = "uploads/" + req.files.invoice[0].filename;
+      }
+    }
+
+    await Asset.create(assetData);
 
     await logAudit({
       user_id: req.user.userId,
@@ -86,9 +97,31 @@ const updateAsset = async (req, res) => {
     if (req.body.purchase_date && new Date(req.body.purchase_date) > new Date()) {
       return res.status(400).json({ success: false, message: "Purchase date cannot be in the future" });
     }
+
+    // Fetch existing asset data first to preserve file paths if not re-uploaded
+    const existing = await Asset.getById(req.params.id);
+    if (!existing) {
+      return res.status(404).json({ success: false, message: "Asset not found" });
+    }
+
+    const assetData = {
+      ...req.body,
+      image_path: existing.image_path,
+      invoice_path: existing.invoice_path
+    };
+
+    if (req.files) {
+      if (req.files.image && req.files.image[0]) {
+        assetData.image_path = "uploads/" + req.files.image[0].filename;
+      }
+      if (req.files.invoice && req.files.invoice[0]) {
+        assetData.invoice_path = "uploads/" + req.files.invoice[0].filename;
+      }
+    }
+
     await Asset.update(
       req.params.id,
-      req.body
+      assetData
     );
 
     await logAudit({

@@ -25,6 +25,7 @@ export default function AssetDetails({ asset, depreciation }) {
     );
   }
 
+  const serverUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const statusColor = STATUS_COLORS[asset.status] || "bg-slate-100 text-slate-600";
 
   const deprPercent = depreciation?.depreciation_percent ?? 0;
@@ -39,6 +40,17 @@ export default function AssetDetails({ asset, depreciation }) {
       {/* Asset Info */}
       <div className="lg:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
         <h2 className="text-base font-bold text-slate-800 mb-4">Asset Information</h2>
+        
+        {asset.image_path && (
+          <div className="mb-4 rounded-xl overflow-hidden aspect-video border border-slate-100 bg-slate-50 flex items-center justify-center shadow-inner">
+            <img
+              src={`${serverUrl}/${asset.image_path}`}
+              alt={asset.asset_name}
+              className="object-cover w-full h-full"
+            />
+          </div>
+        )}
+
         <div>
           <InfoRow label="Asset Code" value={asset.asset_code} />
           <InfoRow label="Asset Name" value={asset.asset_name} />
@@ -55,6 +67,19 @@ export default function AssetDetails({ asset, depreciation }) {
               {asset.status}
             </span>
           </div>
+
+          {asset.invoice_path && (
+            <div className="mt-4 pt-4 border-t border-slate-150">
+              <a
+                href={`${serverUrl}/${asset.invoice_path}`}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-all text-center cursor-pointer"
+              >
+                <span>📄 View Invoice Document</span>
+              </a>
+            </div>
+          )}
         </div>
       </div>
 

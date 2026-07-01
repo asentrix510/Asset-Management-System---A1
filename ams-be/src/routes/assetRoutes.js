@@ -42,15 +42,25 @@ router.get(
   getAssetById
 );
 
+const upload = require("../middleware/uploadMiddleware");
+
 router.post(
   "/",
   authorize("Admin"),
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "invoice", maxCount: 1 },
+  ]),
   createAsset
 );
 
 router.put(
   "/:id",
   authorize("Admin"),
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "invoice", maxCount: 1 },
+  ]),
   updateAsset
 );
 

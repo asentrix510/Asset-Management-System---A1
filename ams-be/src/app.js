@@ -32,10 +32,12 @@ const reportRoutes =
     "./routes/reportRoutes"
   );
 const userPortalRoutes = require("./routes/userPortalRoutes");
+const path = require("path");
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.use("/api/test-db", testRoute);
 app.use("/api/auth", authRoutes);

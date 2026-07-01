@@ -27,12 +27,23 @@ export const getAssetById = async (id) => {
 };
 
 export const createAsset = async (data) => {
+  let payload = data;
+  if (!(data instanceof FormData)) {
+    payload = new FormData();
+    Object.keys(data).forEach((key) => {
+      if (data[key] !== null && data[key] !== undefined) {
+        payload.append(key, data[key]);
+      }
+    });
+  }
+
   const response = await api.post(
     "/assets",
-    data,
+    payload,
     {
       headers: {
         Authorization: `Bearer ${getToken()}`,
+        "Content-Type": "multipart/form-data",
       },
     }
   );
@@ -44,12 +55,23 @@ export const updateAsset = async (
   id,
   data
 ) => {
+  let payload = data;
+  if (!(data instanceof FormData)) {
+    payload = new FormData();
+    Object.keys(data).forEach((key) => {
+      if (data[key] !== null && data[key] !== undefined) {
+        payload.append(key, data[key]);
+      }
+    });
+  }
+
   const response = await api.put(
     `/assets/${id}`,
-    data,
+    payload,
     {
       headers: {
         Authorization: `Bearer ${getToken()}`,
+        "Content-Type": "multipart/form-data",
       },
     }
   );

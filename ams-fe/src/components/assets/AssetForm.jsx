@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { getVendors } from "../../api/vendorApi";
-import { Save, Info, ShoppingCart, RefreshCw, Lock, Unlock } from "lucide-react";
+import { Save, Info, ShoppingCart, RefreshCw, Lock, Unlock, FileText } from "lucide-react";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -86,6 +86,8 @@ export default function AssetForm({ onSubmit, initialData, isEditing, existingAs
   const [formData, setFormData] = useState(INITIAL_STATE);
   const [codeManuallyEdited, setCodeManuallyEdited] = useState(false);
   const [codeLocked, setCodeLocked] = useState(true);
+  const [imageFile, setImageFile] = useState(null);
+  const [invoiceFile, setInvoiceFile] = useState(null);
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -131,11 +133,15 @@ export default function AssetForm({ onSubmit, initialData, isEditing, existingAs
       });
       setCodeManuallyEdited(false);
       setCodeLocked(true);
+      setImageFile(null);
+      setInvoiceFile(null);
     } else {
       const code = generateAssetCode("", existingAssets);
       setFormData({ ...INITIAL_STATE, asset_code: code });
       setCodeManuallyEdited(false);
       setCodeLocked(true);
+      setImageFile(null);
+      setInvoiceFile(null);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialData]);
@@ -169,12 +175,19 @@ export default function AssetForm({ onSubmit, initialData, isEditing, existingAs
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await onSubmit(formData);
+    await onSubmit({
+      ...formData,
+      image: imageFile,
+      invoice: invoiceFile,
+    });
     if (!isEditing) {
       const code = generateAssetCode("", existingAssets);
       setFormData({ ...INITIAL_STATE, asset_code: code });
       setCodeManuallyEdited(false);
       setCodeLocked(true);
+      setImageFile(null);
+      setInvoiceFile(null);
+      e.target.reset();
     }
   };
 
@@ -442,7 +455,46 @@ export default function AssetForm({ onSubmit, initialData, isEditing, existingAs
         </div>
       </div>
 
-      {/* ── Section 3: Notes ── */}
+      {/* ── Section 3: File Uploads ── */}
+      <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-1.5">
+        <FileText className="w-3.5 h-3.5 text-indigo-500" />
+        Attachments &amp; Documents
+      </h3>
+      <div className="grid sm:grid-cols-2 gap-4 mb-6">
+        {/* Photo Upload */}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-slate-500">Asset Photo</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImageFile(e.target.files[0] || null)}
+            className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-750 hover:file:bg-indigo-100 transition-all cursor-pointer"
+          />
+          {initialData?.image_path && (
+            <p className="text-[10px] text-slate-400">
+              Current: <a href={`${import.meta.env.VITE_API_BASE_URL || "http://localhost:5000"}/${initialData.image_path}`} target="_blank" rel="noreferrer" className="text-indigo-600 font-semibold underline">View existing photo</a>
+            </p>
+          )}
+        </div>
+
+        {/* Invoice Upload */}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-slate-500">Purchase Invoice Document (PDF/Image)</label>
+          <input
+            type="file"
+            accept="image/*,.pdf"
+            onChange={(e) => setInvoiceFile(e.target.files[0] || null)}
+            className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-750 hover:file:bg-indigo-100 transition-all cursor-pointer"
+          />
+          {initialData?.invoice_path && (
+            <p className="text-[10px] text-slate-400">
+              Current: <a href={`${import.meta.env.VITE_API_BASE_URL || "http://localhost:5000"}/${initialData.invoice_path}`} target="_blank" rel="noreferrer" className="text-indigo-600 font-semibold underline">View existing invoice</a>
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* ── Section 4: Notes ── */}
       <div className="mb-6">
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-semibold text-slate-500">Description Notes</label>
