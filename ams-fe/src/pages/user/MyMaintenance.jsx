@@ -88,7 +88,7 @@ export default function MyMaintenance() {
             className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
               filter === f
                 ? "bg-slate-900 text-white shadow-md shadow-slate-950/20"
-                : "bg-white text-slate-500 border border-slate-200/80 hover:bg-slate-50 hover:text-slate-700"
+                : "bg-slate-100 text-slate-500 border border-slate-200/80 hover:bg-slate-200 hover:text-slate-700"
             }`}
           >
             {f === "All" ? "All Logs" : f}

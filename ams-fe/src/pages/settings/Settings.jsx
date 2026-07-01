@@ -264,7 +264,7 @@ export default function Settings() {
         </div>
         <button
           onClick={handleSave}
-          className="flex items-center gap-2 bg-indigo-650 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-md shadow-indigo-500/10 transition-all cursor-pointer"
+              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-md shadow-indigo-500/10 transition-all cursor-pointer"
         >
           <Save className="w-4 h-4" /> Save Settings
         </button>
@@ -282,8 +282,8 @@ export default function Settings() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all text-left whitespace-nowrap cursor-pointer ${
                   isActive
-                    ? "bg-indigo-650 text-white shadow-md shadow-indigo-500/15"
-                    : "text-slate-500 hover:bg-slate-100 hover:text-slate-800 bg-transparent"
+                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/15"
+                    : "bg-slate-100 text-slate-500 hover:bg-slate-150 hover:text-slate-800"
                 }`}
               >
                 <div className="flex items-center gap-2.5">
@@ -497,7 +497,7 @@ export default function Settings() {
           <div className="flex justify-end pt-2">
             <button
               onClick={handleSave}
-              className="flex items-center gap-2 bg-indigo-650 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md shadow-indigo-500/10 transition-all cursor-pointer"
+              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md shadow-indigo-500/10 transition-all cursor-pointer"
             >
               <Save className="w-4 h-4" /> Save Settings
             </button>
