@@ -89,6 +89,9 @@ export default function AssetForm({ onSubmit, initialData, isEditing, existingAs
   const [imageFile, setImageFile] = useState(null);
   const [invoiceFile, setInvoiceFile] = useState(null);
 
+  const apiVal = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const serverUrl = apiVal.replace(/\/api$/, "");
+
   const today = new Date().toISOString().split("T")[0];
 
   // Load vendors once
@@ -472,7 +475,7 @@ export default function AssetForm({ onSubmit, initialData, isEditing, existingAs
           />
           {initialData?.image_path && (
             <p className="text-[10px] text-slate-400">
-              Current: <a href={`${import.meta.env.VITE_API_BASE_URL || "http://localhost:5000"}/${initialData.image_path}`} target="_blank" rel="noreferrer" className="text-indigo-600 font-semibold underline">View existing photo</a>
+              Current: <a href={`${serverUrl}/${initialData.image_path}`} target="_blank" rel="noreferrer" className="text-indigo-600 font-semibold underline">View existing photo</a>
             </p>
           )}
         </div>
@@ -488,7 +491,7 @@ export default function AssetForm({ onSubmit, initialData, isEditing, existingAs
           />
           {initialData?.invoice_path && (
             <p className="text-[10px] text-slate-400">
-              Current: <a href={`${import.meta.env.VITE_API_BASE_URL || "http://localhost:5000"}/${initialData.invoice_path}`} target="_blank" rel="noreferrer" className="text-indigo-600 font-semibold underline">View existing invoice</a>
+              Current: <a href={`${serverUrl}/${initialData.invoice_path}`} target="_blank" rel="noreferrer" className="text-indigo-600 font-semibold underline">View existing invoice</a>
             </p>
           )}
         </div>

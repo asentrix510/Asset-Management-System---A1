@@ -25,7 +25,8 @@ export default function AssetDetails({ asset, depreciation }) {
     );
   }
 
-  const serverUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const apiVal = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const serverUrl = apiVal.replace(/\/api$/, "");
   const statusColor = STATUS_COLORS[asset.status] || "bg-slate-100 text-slate-600";
 
   const deprPercent = depreciation?.depreciation_percent ?? 0;

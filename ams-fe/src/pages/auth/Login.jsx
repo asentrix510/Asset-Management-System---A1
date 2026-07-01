@@ -16,26 +16,6 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [stats, setStats] = useState({
-    totalAssets: 0,
-    totalUsers: 0,
-    maintenanceTickets: 0,
-    totalVendors: 0,
-  });
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await api.get("/dashboard/public-stats");
-        if (response.data?.success) {
-          setStats(response.data.stats);
-        }
-      } catch (err) {
-        console.error("Failed to fetch login stats:", err);
-      }
-    };
-    fetchStats();
-  }, []);
 
   // If already authenticated, redirect away from login immediately
   if (!authLoading && isAuthenticated && user) {
@@ -81,13 +61,6 @@ export default function Login() {
   };
 
   const isAdmin = tab === "admin";
-
-  const statCards = [
-    { label: "Total Assets", value: stats.totalAssets, icon: Package, color: "#818cf8" },
-    { label: "Active Users", value: stats.totalUsers, icon: Users, color: "#67e8f9" },
-    { label: "Maintenance", value: stats.maintenanceTickets, icon: Wrench, color: "#fbbf24" },
-    { label: "Vendors", value: stats.totalVendors, icon: Store, color: "#34d399" },
-  ];
 
   return (
     <div className="min-h-screen flex" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -209,36 +182,6 @@ export default function Login() {
           </p>
         </div>
 
-        <div className="mt-16 grid grid-cols-2 gap-4 w-full max-w-sm relative z-10">
-          {statCards.map((s) => {
-            const Icon = s.icon;
-            return (
-              <div
-                key={s.label}
-                className="rounded-2xl p-5 text-center transition-all duration-300 hover:scale-105 cursor-default"
-                style={{
-                  background: "rgba(255, 255, 255, 0.05)",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
-                  backdropFilter: "blur(12px)",
-                }}
-              >
-                <div className="flex justify-center mb-2.5">
-                  <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center"
-                    style={{
-                      background: `${s.color}18`,
-                      border: `1px solid ${s.color}30`,
-                    }}
-                  >
-                    <Icon className="w-4.5 h-4.5" style={{ color: s.color }} />
-                  </div>
-                </div>
-                <p className="text-2xl font-extrabold text-white stat-value">{s.value}</p>
-                <p className="text-xs mt-1.5 font-medium" style={{ color: "#94a3b8" }}>{s.label}</p>
-              </div>
-            );
-          })}
-        </div>
       </div>
 
       {/* Right panel */}
